@@ -6,13 +6,44 @@ use App\Http\Requests\ResidentRequest;
 use App\Models\Resident;
 use Inertia\Inertia;
 
+use Illuminate\Http\Request;
+
 class ResidentsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $residents = Resident::latest()->paginate(10);
+        $query = Resident::query();
 
-        return Inertia::render('Residents/Index', ['residents' => $residents]);
+        if ($request->filled('search')) {
+            $filter = $request->input('filter', 'name');
+            $search = $request->search;
+
+            if ($filter === 'name') {
+                $query->where('name', 'like', '%' . $search . '%');
+            } elseif ($filter === 'gender') {
+                $query->where('gender', $search);
+            } elseif ($filter === 'disease') {
+                if (in_array($search, ['is_diabetic', 'is_hypertensive', 'is_epileptic'])) {
+                    $query->where($search, true);
+                }
+            } elseif ($filter === 'dependency_level') {
+                $query->where('dependency_level', $search);
+            } elseif ($filter === 'age' && is_numeric($search)) {
+                $age = (int)$search;
+                $today = \Carbon\Carbon::today();
+                $maxDate = $today->copy()->subYears($age)->format('Y-m-d');
+                $minDate = $today->copy()->subYears($age + 1)->addDay()->format('Y-m-d');
+
+                $query->whereBetween('birth_date', [$minDate, $maxDate]);
+            }
+        }
+
+        $residents = $query->latest()->paginate(15)->withQueryString();
+
+        return Inertia::render('Residents/Index', [
+            'residents' => $residents,
+            'filters' => $request->only('search', 'filter')
+        ]);
     }
 
     public function create()
@@ -22,30 +53,48 @@ class ResidentsController extends Controller
 
     public function store(ResidentRequest $request)
     {
-        Resident::create($request->validated());
+        $validated = $request->validated();
+
+        if ($request->hasFile('photo_path')) {
+            $validated['photo_path'] = $request->file('photo_path')->store('residents', 'public');
+        }
+
+        Resident::create($validated);
 
         return redirect()->route('residents.index')->with('success', 'O idoso foi cadastrado com sucesso!');
     }
 
     public function show(Resident $resident)
     {
-        return Inertia::render('Residents/Show',
+        return Inertia::render(
+            'Residents/Show',
             [
                 'resident' => $resident,
-            ]);
+            ]
+        );
     }
 
     public function edit(Resident $resident)
     {
-        return Inertia::render('Residents/Edit',
+        return Inertia::render(
+            'Residents/Edit',
             [
                 'resident' => $resident,
-            ]);
+            ]
+        );
     }
 
     public function update(ResidentRequest $request, Resident $resident)
     {
-        $resident->update($request->validated());
+        $validated = $request->validated();
+
+        if ($request->hasFile('photo_path')) {
+            $validated['photo_path'] = $request->file('photo_path')->store('residents', 'public');
+        } else {
+            unset($validated['photo_path']);
+        }
+
+        $resident->update($validated);
 
         return redirect()->route('residents.show', $resident)->with('success', 'O idoso foi atualizado com sucesso!');
     }

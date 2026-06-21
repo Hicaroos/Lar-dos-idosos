@@ -24,11 +24,11 @@ class ResidentRequest extends FormRequest
     {
         return [
             'registration_number' => ['required', 'string', 'max:255'],
-            'admission_date' => ['required', 'date'],
-            'photo_path' => ['nullable', 'string'],
+            'admission_date' => ['required', 'date', 'before_or_equal:today'],
+            'photo_path' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
             'name' => ['required', 'string', 'max:255'],
             'gender' => ['required', 'string'],
-            'birth_date' => ['required', 'date'],
+            'birth_date' => ['required', 'date', 'before_or_equal:today'],
             'parentage' => ['nullable', 'string', 'max:255'],
             'naturalness' => ['nullable', 'string', 'max:255'],
             'religion' => ['nullable', 'string', 'max:255'],
@@ -42,7 +42,7 @@ class ResidentRequest extends FormRequest
             'reference_point' => ['nullable', 'string', 'max:255'],
             'rg' => ['nullable', 'string', 'max:50'],
             'rg_ssp' => ['nullable', 'string', 'max:50'],
-            'rg_emission' => ['nullable', 'date'],
+            'rg_emission' => ['nullable', 'date', 'before_or_equal:today'],
             'cpf' => ['nullable', 'string', 'max:20'],
             'birth_certificate' => ['nullable', 'string', 'max:255'],
             'birth_certificate_lv' => ['nullable', 'string', 'max:255'],
@@ -65,6 +65,9 @@ class ResidentRequest extends FormRequest
             'registration_number.required' => 'O número do prontuário é obrigatório.',
             'admission_date.required' => 'A data de admissão é obrigatória.',
             'admission_date.date' => 'A data de admissão deve ser uma data válida.',
+            'photo_path.image' => 'A foto deve ser uma imagem válida.',
+            'photo_path.mimes' => 'A foto deve ser do tipo JPEG, PNG ou WEBP.',
+            'photo_path.max' => 'A foto não pode ter mais de 5MB.',
             'name.required' => 'O nome completo é obrigatório.',
             'gender.required' => 'O sexo é obrigatório.',
             'birth_date.required' => 'A data de nascimento é obrigatória.',
@@ -78,6 +81,7 @@ class ResidentRequest extends FormRequest
             'max' => 'O campo :attribute não pode ter mais de :max caracteres.',
             'boolean' => 'O campo :attribute deve ser verdadeiro ou falso.',
             'size' => 'O campo :attribute deve ter exatamente :size caracteres.',
+            'before_or_equal' => 'O campo :attribute não pode ser uma data futura.',
         ];
     }
 
