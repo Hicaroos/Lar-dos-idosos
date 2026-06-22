@@ -4,6 +4,7 @@ import TextInput from '@/components/Form/TextInput.vue';
 import SelectInput from '@/components/Form/SelectInput.vue';
 import InputError from '@/components/Form/InputError.vue';
 import CheckboxInput from '@/components/Form/CheckboxInput.vue';
+import BaseButton from '@/components/UI/BaseButton.vue';
 
 import { useForm, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
@@ -74,15 +75,13 @@ const handlePhotoUpload = (event: Event) => {
                     <p class="text-slate-500 mt-1">Preencha os dados abaixo para matricular um novo idoso.</p>
                 </div>
                 <div class="flex gap-4">
-                    <Link :href="residentsRoutes.index().url"
-                        class="px-5 py-2.5 bg-white text-slate-700 font-medium rounded-lg border border-slate-300 hover:bg-slate-50 transition shadow-sm">
+                    <BaseButton variant="outline" :href="residentsRoutes.index().url">
                         Cancelar
-                    </Link>
-                    <button type="submit" :disabled="form.processing"
-                        class="px-6 py-2.5 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition shadow-sm disabled:opacity-50 flex items-center gap-2">
+                    </BaseButton>
+                    <BaseButton variant="primary" type="submit" :disabled="form.processing">
                         <span v-if="form.processing">Salvando...</span>
                         <span v-else>Salvar Cadastro</span>
-                    </button>
+                    </BaseButton>
                 </div>
             </div>
 

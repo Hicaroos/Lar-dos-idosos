@@ -6,6 +6,8 @@ import residentsRoutes from '@/routes/residents';
 import InfoRow from '@/components/DataDisplay/InfoRow.vue';
 import Tag from '@/components/Form/Tag.vue';
 import DeleteModal from '@/components/Modals/DeleteModal.vue';
+import DataTable from '@/components/DataDisplay/DataTable.vue';
+import BaseButton from '@/components/UI/BaseButton.vue';
 
 const showDeleteModal = ref(false);
 const residentToDelete = ref<number | null>(null);
@@ -28,7 +30,7 @@ const goBack = () => {
     router.visit(url);
 };
 
-defineProps<{
+const props = defineProps<{
     resident: {
         id: number;
         registration_number: string;
@@ -75,6 +77,7 @@ const formatDate = (date: string | undefined) => {
     }
     return date;
 };
+
 </script>
 
 <template>
@@ -102,18 +105,15 @@ const formatDate = (date: string | undefined) => {
 
 
                         <div class="flex items-center gap-3">
-                            <button type="button" @click="goBack"
-                                class="px-5 py-2 bg-slate-100 text-slate-700 font-medium rounded-lg hover:bg-slate-200 transition shadow-sm flex items-center gap-2">
+                            <BaseButton variant="secondary" @click="goBack">
                                 Voltar
-                            </button>
-                            <Link :href="residentsRoutes.edit(resident.id).url"
-                                class="px-5 py-2.5 bg-emerald-600/80 text-white font-medium rounded-lg hover:bg-emerald-700 transition shadow-sm flex items-center gap-2">
+                            </BaseButton>
+                            <BaseButton variant="primary" :href="residentsRoutes.edit(resident.id).url">
                                 Editar
-                            </Link>
-                            <button @click="openDeleteModal(resident.id)"
-                                class="px-5 py-2 bg-red-50 text-red-600 font-medium rounded-lg border border-red-200 hover:bg-red-100 transition shadow-sm flex items-center gap-2">
+                            </BaseButton>
+                            <BaseButton variant="danger" @click="openDeleteModal(resident.id)">
                                 Excluir
-                            </button>
+                            </BaseButton>
                         </div>
                     </div>
                 </header>
@@ -121,7 +121,7 @@ const formatDate = (date: string | undefined) => {
 
                 <div class="grid grid-cols-2 gap-6 w-full">
 
-                    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <DataTable>
                         <h2 class="font-bold text-lg mb-6 text-slate-800 flex items-center gap-2 border-b pb-2">
                             Dados Pessoais
                         </h2>
@@ -133,10 +133,10 @@ const formatDate = (date: string | undefined) => {
                             <InfoRow label="Religião:" :value="resident.religion" />
                             <InfoRow label="Telefones:" :value="resident.phone_numbers" />
                         </div>
-                    </section>
+                    </DataTable>
 
 
-                    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <DataTable>
                         <h2 class="font-bold text-lg mb-6 text-slate-800 flex items-center gap-2 border-b pb-2">
                             Saúde e Dependência
                         </h2>
@@ -159,11 +159,15 @@ const formatDate = (date: string | undefined) => {
                                 <span class="text-slate-500 block mb-1">Observações / Comodidades:</span>
                                 <p class="text-slate-800">{{ resident.amenities }}</p>
                             </div>
+                            <Link :href="`/residents/${resident.id}/medications`"
+                                class="px-6 py-2.5 bg-emerald-600/80 text-white font-medium rounded-lg hover:bg-emerald-700 transition shadow-sm flex items-center justify-center fgap-2">
+                                Ver medicamentos
+                            </Link>
                         </div>
-                    </section>
+                    </DataTable>
 
 
-                    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <DataTable>
                         <h2 class="font-bold text-lg mb-6 text-slate-800 flex items-center gap-2 border-b pb-2">
                             Documentação
                         </h2>
@@ -191,14 +195,14 @@ const formatDate = (date: string | undefined) => {
                                             }}</span></div>
                                     <div><span class="text-xs text-slate-400 block">Folha</span> <span
                                             class="font-medium text-slate-800">{{ resident.birth_certificate_leaves ||
-                                            '-' }}</span></div>
+                                                '-' }}</span></div>
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </DataTable>
 
 
-                    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                    <DataTable>
                         <h2 class="font-bold text-lg mb-6 text-slate-800 flex items-center gap-2 border-b pb-2">
                             Endereço de Origem
                         </h2>
@@ -218,7 +222,7 @@ const formatDate = (date: string | undefined) => {
                                 </span>
                             </div>
                         </div>
-                    </section>
+                    </DataTable>
                 </div>
 
             </main>

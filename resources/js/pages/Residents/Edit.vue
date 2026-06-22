@@ -8,6 +8,7 @@ import CheckboxInput from '@/components/Form/CheckboxInput.vue';
 import { useForm, Link } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import residentsRoutes from '@/routes/residents';
+import BaseButton from '@/components/UI/BaseButton.vue';
 
 const props = defineProps<{
     resident: any;
@@ -79,15 +80,13 @@ const handlePhotoUpload = (event: Event) => {
                     <p class="text-slate-500 mt-1">Atualize as informações do idoso matriculado.</p>
                 </div>
                 <div class="flex gap-4">
-                    <Link :href="residentsRoutes.show(props.resident.id).url"
-                        class="px-5 py-2.5 bg-white text-slate-700 font-medium rounded-lg border border-slate-300 hover:bg-slate-50 transition shadow-sm">
+                    <BaseButton variant="outline" :href="residentsRoutes.show(props.resident.id).url">
                         Cancelar
-                    </Link>
-                    <button type="submit" :disabled="form.processing"
-                        class="px-6 py-2.5 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 transition shadow-sm disabled:opacity-50 flex items-center gap-2">
+                    </BaseButton>
+                    <BaseButton variant="primary" type="submit" :disabled="form.processing">
                         <span v-if="form.processing">Salvando...</span>
                         <span v-else>Salvar Alterações</span>
-                    </button>
+                    </BaseButton>
                 </div>
             </div>
 

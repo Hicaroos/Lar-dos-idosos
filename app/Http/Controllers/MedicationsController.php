@@ -5,56 +5,35 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MedicationRequest;
 use App\Models\Medication;
 use Inertia\Inertia;
+use App\Models\Resident;
 
 class MedicationsController extends Controller
 {
-    public function index()
+    public function index(Resident $resident)
     {
-        $medications = Medication::latest()->get();
+        $resident->load('medications');
 
-        return Inertia::render('Medications/Index', ['medications' => $medications]);
+        return Inertia::render('Medications/Index', ['resident' => $resident]);
     }
 
-    public function create()
+    public function store(MedicationRequest $request, Resident $resident)
     {
+        $resident->medications()->create($request->validated());
 
-        return Inertia::render('Medications/Create');
-    }
-
-    public function store(MedicationRequest $request)
-    {
-        Medication::create($request->validated());
-
-        return redirect()->route('medications.index')->with('success', 'O medicamento foi criado com sucesso!');
-    }
-
-    public function show(Medication $medication)
-    {
-        return Inertia::render('Medications/Show',
-            [
-                'medication' => $medication,
-            ]);
-    }
-
-    public function edit(Medication $medication)
-    {
-        return Inertia::render('Medications/Edit',
-            [
-                'medication' => $medication,
-            ]);
+        return back()->with('success', 'Medicamento adicionado com sucesso!');
     }
 
     public function update(MedicationRequest $request, Medication $medication)
     {
         $medication->update($request->validated());
 
-        return redirect()->route('medications.show', $medication)->with('success', 'O medicamento foi atualizado com sucesso!');
+        return back()->with('success', 'Medicamento atualizado com sucesso!');
     }
 
     public function destroy(Medication $medication)
     {
         $medication->delete();
 
-        return redirect()->route('medications.index')->with('success', 'O medicamento foi excluído com sucesso!');
+        return back()->with('success', 'Medicamento excluído com sucesso!');
     }
 }

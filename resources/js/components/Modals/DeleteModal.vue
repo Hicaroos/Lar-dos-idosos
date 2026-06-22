@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import BaseButton from '@/components/UI/BaseButton.vue';
+
 defineProps<{
     show: boolean;
     title?: string;
@@ -29,14 +31,12 @@ defineEmits<{
                 {{ message || 'Tem certeza que deseja excluir este item?' }}
             </p>
             <div class="flex gap-4 justify-center">
-                <button @click="$emit('close')"
-                    class="flex-1 px-6 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors">
+                <BaseButton variant="outline" @click="$emit('close')" class="flex-1">
                     Cancelar
-                </button>
-                <button @click="$emit('confirm')"
-                    class="flex-1 px-6 py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition-colors shadow-sm hover:shadow-md">
+                </BaseButton>
+                <BaseButton variant="danger" @click="$emit('confirm')" class="flex-1">
                     Sim, Excluir
-                </button>
+                </BaseButton>
             </div>
         </div>
     </div>

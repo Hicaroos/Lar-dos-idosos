@@ -66,6 +66,8 @@ class ResidentsController extends Controller
 
     public function show(Resident $resident)
     {
+        $resident->load('medications');
+
         return Inertia::render(
             'Residents/Show',
             [

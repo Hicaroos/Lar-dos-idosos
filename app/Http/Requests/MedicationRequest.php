@@ -23,11 +23,10 @@ class MedicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'resident_id' => ['required', 'exists:residents,id'],
             'name' => ['required', 'string', 'max:255'],
             'time' => ['required', 'string', 'max:255'],
             'dose' => ['required', 'string', 'max:255'],
-            'shift' => ['required', 'string', 'in:manha,tarde,noite'],
+            'shift' => ['required', 'string', 'in:Manhã,Tarde,Noite'],
         ];
     }
 

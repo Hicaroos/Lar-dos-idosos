@@ -3,10 +3,12 @@ import { ref, watch, onMounted, onUpdated } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import residentsRoutes from '@/routes/residents';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { MagnifyingGlassIcon } from '@heroicons/vue/24/solid';
+import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/24/solid';
+
 
 import { usePage } from '@inertiajs/vue3';
 import Tag from '@/components/Form/Tag.vue';
+import BaseButton from '@/components/UI/BaseButton.vue';
 
 
 
@@ -87,6 +89,7 @@ const calculateAge = (birthDate: string | undefined) => {
     return `${age} anos`;
 };
 
+// Lembrar de apagar
 const formatDate = (date: string | undefined) => {
     if (!date) return 'Não informado';
     const parts = date.split('-');
@@ -102,7 +105,8 @@ const formatDate = (date: string | undefined) => {
         <main>
             <header class="flex justify-between items-center m-10 px-10">
                 <div class="flex w-1/2 gap-2">
-                    <select v-model="filter" class="border border-slate-300 rounded-lg px-4 py-2 shadow-sm focus:ring focus:ring-slate-300 focus:outline-none text-slate-400">
+                    <select v-model="filter"
+                        class="border border-slate-300 rounded-lg  py-2 shadow-sm focus:ring focus:ring-slate-300 focus:outline-none text-slate-400">
                         <option value="name">Nome</option>
                         <option value="age">Idade</option>
                         <option value="gender">Gênero</option>
@@ -114,28 +118,33 @@ const formatDate = (date: string | undefined) => {
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                             <MagnifyingGlassIcon class="w-5 h-5 text-slate-400" />
                         </div>
-                        
-                        <input v-if="filter === 'name'" v-model="search" type="text" placeholder="Buscar residente pelo nome..."
+
+                        <input v-if="filter === 'name'" v-model="search" type="text"
+                            placeholder="Buscar residente pelo nome..."
                             class="h-10 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none" />
 
-                        <input v-else-if="filter === 'age'" v-model="search" type="number" placeholder="Buscar pela idade exata..." min="0" max="150"
+                        <input v-else-if="filter === 'age'" v-model="search" type="number"
+                            placeholder="Buscar pela idade exata..." min="0" max="150"
                             class="h-10 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none" />
 
-                        <select v-else-if="filter === 'gender'" v-model="search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
+                        <select v-else-if="filter === 'gender'" v-model="search"
+                            class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
                             <option value="">Selecione um gênero...</option>
                             <option value="Masculino">Masculino</option>
                             <option value="Feminino">Feminino</option>
                             <option value="Outro">Outro</option>
                         </select>
 
-                        <select v-else-if="filter === 'disease'" v-model="search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
+                        <select v-else-if="filter === 'disease'" v-model="search"
+                            class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
                             <option value="">Selecione uma comorbidade...</option>
                             <option value="is_diabetic">Diabético</option>
                             <option value="is_hypertensive">Hipertenso</option>
                             <option value="is_epileptic">Epilético</option>
                         </select>
 
-                        <select v-else-if="filter === 'dependency_level'" v-model="search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
+                        <select v-else-if="filter === 'dependency_level'" v-model="search"
+                            class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
                             <option value="">Selecione um grau...</option>
                             <option value="1">Grau 1 (Independente)</option>
                             <option value="2">Grau 2 (Dependência Parcial)</option>
@@ -143,10 +152,10 @@ const formatDate = (date: string | undefined) => {
                         </select>
                     </div>
                 </div>
-                <Link href="/residents/create"
-                    class="px-6 py-2.5 bg-emerald-600/80 text-white font-medium rounded-lg hover:bg-emerald-700 transition shadow-sm flex items-center gap-2">
-                    Cadastrar
-                </Link>
+                <BaseButton variant="primary" href="/residents/create">
+                    <PlusIcon class="w-5 h-5" />
+                    Criar Cadastro
+                </BaseButton>
             </header>
 
             <ul class="grid grid-cols-5 gap-x-6 gap-y-8 m-10 mt-0 p-10 pt-0">
@@ -200,10 +209,10 @@ const formatDate = (date: string | undefined) => {
                     </div>
 
                     <footer class="w-full mt-auto">
-                        <Link :href="residentsRoutes.show(resident.id).url"
-                            class="w-full flex items-center justify-center px-4 py-3.5 bg-slate-50 text-slate-700 font-bold rounded-2xl border border-slate-200 hover:bg-emerald-600/80 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">
+                        <BaseButton variant="outline-emerald" :href="residentsRoutes.show(resident.id).url"
+                            class="w-full py-3">
                             Abrir Prontuário
-                        </Link>
+                        </BaseButton>
                     </footer>
                 </li>
             </ul>
