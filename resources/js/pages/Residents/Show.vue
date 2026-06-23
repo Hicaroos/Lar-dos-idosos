@@ -22,8 +22,15 @@ const closeDeleteModal = () => {
 };
 const confirmDelete = () => {
     if (residentToDelete.value !== null) {
-        router.delete(residentsRoutes.destroy(residentToDelete.value).url);
+        if (props.resident.deleted_at) {
+            router.delete(`/residents/${residentToDelete.value}/force`);
+        } else {
+            router.delete(residentsRoutes.destroy(residentToDelete.value).url);
+        }
     }
+};
+const restoreResident = () => {
+    router.post(`/residents/${props.resident.id}/restore`);
 };
 const goBack = () => {
     const url = sessionStorage.getItem('residents_index_url') || residentsRoutes.index().url;
@@ -66,6 +73,7 @@ const props = defineProps<{
         is_hypertensive: boolean;
         is_epileptic: boolean;
         amenities?: string;
+        deleted_at?: string;
     };
 }>();
 
@@ -95,7 +103,10 @@ const formatDate = (date: string | undefined) => {
                         <div>
                             <h2 class="font-bold text-slate-500 uppercase tracking-widest text-xs mb-1">N° do
                                 prontuário: {{ resident.registration_number || 'N/A' }}</h2>
-                            <h1 class="text-3xl font-bold text-slate-800">{{ resident.name }}</h1>
+                            <h1 class="text-3xl font-bold text-slate-800 flex items-center gap-3">
+                                {{ resident.name }}
+                                <Tag v-if="resident.deleted_at" cor="slate" text="No Histórico" class="text-sm" />
+                            </h1>
                             <p class="text-slate-500 mt-2 flex items-center gap-2">
                                 <span class="bg-slate-200 text-slate-700 px-3 py-1 rounded-full text-sm font-medium">
                                     Admitido em: {{ formatDate(resident.admission_date) }}
@@ -108,12 +119,22 @@ const formatDate = (date: string | undefined) => {
                             <BaseButton variant="secondary" @click="goBack">
                                 Voltar
                             </BaseButton>
-                            <BaseButton variant="primary" :href="residentsRoutes.edit(resident.id).url">
-                                Editar
-                            </BaseButton>
-                            <BaseButton variant="danger" @click="openDeleteModal(resident.id)">
-                                Excluir
-                            </BaseButton>
+                            <template v-if="resident.deleted_at">
+                                <BaseButton variant="primary" @click="restoreResident">
+                                    Restaurar
+                                </BaseButton>
+                                <BaseButton variant="danger" @click="openDeleteModal(resident.id)">
+                                    Excluir Definitivamente
+                                </BaseButton>
+                            </template>
+                            <template v-else>
+                                <BaseButton variant="primary" :href="residentsRoutes.edit(resident.id).url">
+                                    Editar
+                                </BaseButton>
+                                <BaseButton variant="danger" @click="openDeleteModal(resident.id)">
+                                    Excluir
+                                </BaseButton>
+                            </template>
                         </div>
                     </div>
                 </header>
@@ -136,11 +157,11 @@ const formatDate = (date: string | undefined) => {
                     </DataTable>
 
 
-                    <DataTable>
+                    <DataTable class="flex flex-col">
                         <h2 class="font-bold text-lg mb-6 text-slate-800 flex items-center gap-2 border-b pb-2">
                             Saúde e Dependência
                         </h2>
-                        <div class="space-y-3 text-sm">
+                        <div class="space-y-3 text-sm flex-1 flex flex-col">
                             <InfoRow label="Grau de Dependência:">
                                 Grau {{ resident.dependency_level || '-' }}
                             </InfoRow>
@@ -157,12 +178,14 @@ const formatDate = (date: string | undefined) => {
 
                             <div class="mt-4 pt-4 border-t border-slate-100" v-if="resident.amenities">
                                 <span class="text-slate-500 block mb-1">Observações / Comodidades:</span>
-                                <p class="text-slate-800">{{ resident.amenities }}</p>
+                                <p class="text-slate-800 break-all">{{ resident.amenities }}</p>
                             </div>
-                            <Link :href="`/residents/${resident.id}/medications`"
-                                class="px-6 py-2.5 bg-emerald-600/80 text-white font-medium rounded-lg hover:bg-emerald-700 transition shadow-sm flex items-center justify-center fgap-2">
-                                Ver medicamentos
-                            </Link>
+                            
+                            <div class="mt-auto pt-4">
+                                <BaseButton variant="primary" :href="`/residents/${resident.id}/medications`" class="w-full">
+                                    Ver medicamentos
+                                </BaseButton>
+                            </div>
                         </div>
                     </DataTable>
 
@@ -229,8 +252,8 @@ const formatDate = (date: string | undefined) => {
         </div>
 
 
-        <DeleteModal :show="showDeleteModal" title="Excluir Residente?"
-            message="Você está prestes a excluir todos os dados deste residente." @close="closeDeleteModal"
+        <DeleteModal :show="showDeleteModal" :title="resident.deleted_at ? 'Excluir Definitivamente?' : 'Excluir Residente?'"
+            :message="resident.deleted_at ? 'Você está prestes a excluir todos os dados deste residente permanentemente. Esta ação não pode ser desfeita.' : 'Você está prestes a excluir todos os dados deste residente.'" @close="closeDeleteModal"
             @confirm="confirmDelete" />
     </AppLayout>
 </template>

@@ -8,6 +8,7 @@ import MedicationModal from '@/components/Modals/MedicationModal.vue';
 import DeleteModal from '@/components/Modals/DeleteModal.vue';
 import BaseButton from '@/components/UI/BaseButton.vue';
 import medicationsRoutes from '@/routes/medications';
+import Tag from '@/components/Form/Tag.vue';
 
 const props = defineProps<{
     resident: any;
@@ -64,10 +65,13 @@ const executeDelete = () => {
                 <div>
                     <h1 class="text-3xl font-bold text-slate-800">Prontuário de Medicamentos</h1>
                     <p class="text-slate-500 mt-1">Gerenciamento de receitas do(a) <span
-                            class="font-bold text-slate-700">{{ resident.name }}</span></p>
+                            class="font-bold text-slate-700">{{ resident.name }}</span>
+
+                        <Tag v-if="resident.deleted_at" cor="slate" text="No Histórico" class="text-xs w-40 inline-block mx-5 text-center"></Tag>
+                    </p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <BaseButton variant="primary" @click="openCreateModal">
+                    <BaseButton v-if="!resident.deleted_at" variant="primary" @click="openCreateModal">
                         <PlusIcon class="w-5 h-5" />
                         Adicionar Receita
                     </BaseButton>
@@ -78,21 +82,21 @@ const executeDelete = () => {
             </header>
 
             <div class="grid grid-cols-1 gap-8">
-                <MedicationTable title="Manhã" theme="emerald" :medications="morningMedications" @edit="openEditModal"
+                <MedicationTable title="Manhã" theme="emerald" :readonly="!!resident.deleted_at" :medications="morningMedications" @edit="openEditModal"
                     @delete="confirmDelete">
                     <template #icon>
                         <SunIcon class="w-6 h-6" />
                     </template>
                 </MedicationTable>
 
-                <MedicationTable title="Tarde" theme="sky" :medications="afternoonMedications" @edit="openEditModal"
+                <MedicationTable title="Tarde" theme="sky" :readonly="!!resident.deleted_at" :medications="afternoonMedications" @edit="openEditModal"
                     @delete="confirmDelete">
                     <template #icon>
                         <SunIcon class="w-6 h-6" />
                     </template>
                 </MedicationTable>
 
-                <MedicationTable title="Noite" theme="purple" :medications="nightMedications" @edit="openEditModal"
+                <MedicationTable title="Noite" theme="purple" :readonly="!!resident.deleted_at" :medications="nightMedications" @edit="openEditModal"
                     @delete="confirmDelete">
                     <template #icon>
                         <MoonIcon class="w-6 h-6" />

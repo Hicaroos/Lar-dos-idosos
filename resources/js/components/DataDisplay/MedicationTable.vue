@@ -3,6 +3,7 @@ const props = defineProps<{
     title: string;
     theme: 'purple' | 'sky' | 'emerald';
     medications: any[];
+    readonly?: boolean;
 }>();
 
 defineEmits<{
@@ -51,18 +52,18 @@ const themeClasses = {
                         <th class="py-3 px-6 font-semibold w-2/5">Medicamento</th>
                         <th class="py-3 px-6 font-semibold">Dosagem</th>
                         <th class="py-3 px-6 font-semibold w-32">Horário</th>
-                        <th class="py-3 px-6 font-semibold w-24 text-right">Ações</th>
+                        <th v-if="!readonly" class="py-3 px-6 font-semibold w-24 text-right">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-if="medications.length === 0">
-                        <td colspan="4" class="py-8 text-center text-slate-400 italic">Nenhum medicamento para este turno.</td>
+                        <td :colspan="readonly ? 3 : 4" class="py-8 text-center text-slate-400 italic">Nenhum medicamento para este turno.</td>
                     </tr>
                     <tr v-for="med in medications" :key="med.id" class="border-b border-slate-100 hover:bg-slate-50 transition">
                         <td class="py-4 px-6 font-medium text-slate-800 break-words">{{ med.name }}</td>
                         <td class="py-4 px-6 text-slate-600 break-words">{{ med.dose }}</td>
                         <td class="py-4 px-6 text-slate-600 font-mono">{{ med.time }}</td>
-                        <td class="py-4 px-6 text-right">
+                        <td v-if="!readonly" class="py-4 px-6 text-right">
                             <div class="flex items-center justify-end gap-2">
                                 <button @click="$emit('edit', med)" class="text-slate-400 hover:text-emerald-600 transition p-1" title="Editar">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

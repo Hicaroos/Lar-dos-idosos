@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ResidentRequest;
 use App\Models\Resident;
-use Inertia\Inertia;
-
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ResidentsController extends Controller
 {
     public function index(Request $request)
     {
         $query = Resident::query();
+
+        if ($request->input('status') === 'history') {
+            $query = Resident::onlyTrashed();
+        }
 
         if ($request->filled('search')) {
             $filter = $request->input('filter', 'name');
@@ -29,8 +33,8 @@ class ResidentsController extends Controller
             } elseif ($filter === 'dependency_level') {
                 $query->where('dependency_level', $search);
             } elseif ($filter === 'age' && is_numeric($search)) {
-                $age = (int)$search;
-                $today = \Carbon\Carbon::today();
+                $age = (int) $search;
+                $today = Carbon::today();
                 $maxDate = $today->copy()->subYears($age)->format('Y-m-d');
                 $minDate = $today->copy()->subYears($age + 1)->addDay()->format('Y-m-d');
 
@@ -42,7 +46,7 @@ class ResidentsController extends Controller
 
         return Inertia::render('Residents/Index', [
             'residents' => $residents,
-            'filters' => $request->only('search', 'filter')
+            'filters' => $request->only('search', 'filter', 'status'),
         ]);
     }
 
@@ -106,5 +110,19 @@ class ResidentsController extends Controller
         $resident->delete();
 
         return redirect()->route('residents.index')->with('success', 'O idoso foi excluído com sucesso!');
+    }
+
+    public function restore(Resident $resident)
+    {
+        $resident->restore();
+
+        return redirect()->route('residents.index', ['status' => 'history'])->with('success', 'O idoso foi restaurado com sucesso!');
+    }
+
+    public function forceDelete(Resident $resident)
+    {
+        $resident->forceDelete();
+
+        return redirect()->route('residents.index', ['status' => 'history'])->with('success', 'O idoso foi excluído definitivamente!');
     }
 }

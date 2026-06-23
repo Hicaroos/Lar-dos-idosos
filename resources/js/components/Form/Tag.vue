@@ -12,7 +12,7 @@ const colors = {
     sky: "bg-sky-300/70",
 }
 
-const classColor = computed(() => colors[props.cor as keyof typeof colors] || "bg-slate-300");
+const classColor = computed(() => colors[props.cor as keyof typeof colors] || "bg-slate-200");
 
 
 </script>
