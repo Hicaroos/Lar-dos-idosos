@@ -60,6 +60,7 @@ const submit = () => {
         _method: 'put',
     })).post(residentsRoutes.update(props.resident.id).url, {
         forceFormData: true,
+        replace: true,
     });
 };
 
@@ -71,11 +72,7 @@ const handlePhotoUpload = (event: Event) => {
 };
 
 const goBack = () => {
-    if (window.history.length > 1) {
-        window.history.back();
-    } else {
-        router.visit(residentsRoutes.show(props.resident.id).url);
-    }
+    router.visit(residentsRoutes.show(props.resident.id).url);
 };
 
 const deletePhoto = () => {

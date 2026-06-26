@@ -53,6 +53,7 @@ const form = useForm({
 const submit = () => {
     form.post(residentsRoutes.store().url, {
         forceFormData: true,
+        replace: true,
     });
 };
 

@@ -36,8 +36,8 @@ const restoreResident = () => {
     router.post(`/residents/${props.resident.id}/restore`);
 };
 const goBack = () => {
-    if (window.history.length > 1) {
-        window.history.back();
+    if (props.resident.deleted_at) {
+        router.visit('/residents?status=history');
     } else {
         router.visit(residentsRoutes.index().url);
     }
