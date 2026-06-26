@@ -7,6 +7,7 @@ use App\Models\Resident;
 use App\Services\ResidentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -85,5 +86,15 @@ class ResidentsController extends Controller
         $resident->forceDelete();
 
         return redirect()->route('residents.index', ['status' => 'history'])->with('success', 'O idoso foi excluído definitivamente!');
+    }
+
+    public function destroyPhoto(Resident $resident): RedirectResponse
+    {
+        if ($resident->photo_path) {
+            Storage::disk('public')->delete($resident->photo_path);
+            $resident->update(['photo_path' => null]);
+        }
+
+        return redirect()->back()->with('success', 'Foto removida com sucesso!');
     }
 }
