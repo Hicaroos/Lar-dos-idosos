@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\MedicationsController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ResidentsController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,3 +16,5 @@ Route::resource('residents', ResidentsController::class)->withTrashed();
 Route::get('residents/{resident}/medications', [MedicationsController::class, 'index'])->name('residents.medications.index')->withTrashed();
 Route::resource('residents.medications', MedicationsController::class)->shallow()->except(['index']);
 Route::resource('documents', DocumentsController::class);
+
+Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
