@@ -34,8 +34,11 @@ const restoreResident = () => {
     router.post(`/residents/${props.resident.id}/restore`);
 };
 const goBack = () => {
-    const url = sessionStorage.getItem('residents_index_url') || residentsRoutes.index().url;
-    router.visit(url);
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        router.visit(residentsRoutes.index().url);
+    }
 };
 
 const showDocumentModal = ref(false);

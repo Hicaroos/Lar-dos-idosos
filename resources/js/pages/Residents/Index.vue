@@ -5,16 +5,8 @@ import residentsRoutes from '@/routes/residents';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { MagnifyingGlassIcon } from '@heroicons/vue/24/solid';
 
-import { usePage } from '@inertiajs/vue3';
+import { useRemember } from '@inertiajs/vue3';
 import Tag from '@/components/Form/Tag.vue';
-
-
-const page = usePage();
-watch(() => page.url, (newUrl) => {
-    if (typeof window !== 'undefined') {
-        sessionStorage.setItem('residents_index_url', newUrl);
-    }
-}, { immediate: true });
 
 export interface Resident {
     id: number;
@@ -44,19 +36,21 @@ const props = defineProps<{
     };
 }>();
 
-const search = ref(props.filters?.search || '');
 const validFilters = ['name', 'age', 'gender', 'disease', 'dependency_level'];
-const filter = ref(validFilters.includes(props.filters?.filter as string) ? props.filters?.filter : 'name');
+const state = useRemember({
+    search: props.filters?.search || '',
+    filter: validFilters.includes(props.filters?.filter as string) ? (props.filters?.filter as string) : 'name'
+}, 'residents_state') as any;
 
 let timeout: any = null;
 
-watch(filter, (newVal, oldVal) => {
+watch(() => state.value.filter, (newVal, oldVal) => {
     if (oldVal) {
-        search.value = '';
+        state.value.search = '';
     }
 });
 
-watch([search, filter], ([newSearch, newFilter]) => {
+watch([() => state.value.search, () => state.value.filter], ([newSearch, newFilter]) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
         const params: any = {};
@@ -90,14 +84,6 @@ const calculateAge = (birthDate: string | undefined) => {
     return `${age} anos`;
 };
 
-const formatDate = (date: string | undefined) => {
-    if (!date) return 'Não informado';
-    const parts = date.split('-');
-    if (parts.length === 3) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    }
-    return date;
-};
 </script>
 
 <template>
@@ -105,7 +91,7 @@ const formatDate = (date: string | undefined) => {
         <main>
             <header class="flex justify-between items-center mx-10 px-10 h-30">
                 <div class="flex w-1/2 gap-2">
-                    <select v-model="filter" class="border border-slate-300 rounded-lg px-4 py-2 shadow-sm focus:ring focus:ring-slate-300 focus:outline-none text-slate-400">
+                    <select v-model="state.filter" class="border border-slate-300 rounded-lg px-4 py-2 shadow-sm focus:ring focus:ring-slate-300 focus:outline-none text-slate-400">
                         <option value="name">Nome</option>
                         <option value="age">Idade</option>
                         <option value="gender">Gênero</option>
@@ -118,27 +104,27 @@ const formatDate = (date: string | undefined) => {
                             <MagnifyingGlassIcon class="w-5 h-5 text-slate-400" />
                         </div>
                         
-                        <input v-if="filter === 'name'" v-model="search" type="text" placeholder="Buscar residente pelo nome..."
+                        <input v-if="state.filter === 'name'" v-model="state.search" type="text" placeholder="Buscar residente pelo nome..."
                             class="h-10 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none" />
 
-                        <input v-else-if="filter === 'age'" v-model="search" type="number" placeholder="Buscar pela idade exata..." min="0" max="150"
+                        <input v-else-if="state.filter === 'age'" v-model="state.search" type="number" placeholder="Buscar pela idade exata..." min="0" max="150"
                             class="h-10 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none" />
 
-                        <select v-else-if="filter === 'gender'" v-model="search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
+                        <select v-else-if="state.filter === 'gender'" v-model="state.search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
                             <option value="">Selecione um gênero...</option>
                             <option value="Masculino">Masculino</option>
                             <option value="Feminino">Feminino</option>
                             <option value="Outro">Outro</option>
                         </select>
 
-                        <select v-else-if="filter === 'disease'" v-model="search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
+                        <select v-else-if="state.filter === 'disease'" v-model="state.search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
                             <option value="">Selecione uma comorbidade...</option>
                             <option value="is_diabetic">Diabético</option>
                             <option value="is_hypertensive">Hipertenso</option>
                             <option value="is_epileptic">Epilético</option>
                         </select>
 
-                        <select v-else-if="filter === 'dependency_level'" v-model="search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
+                        <select v-else-if="state.filter === 'dependency_level'" v-model="state.search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
                             <option value="">Selecione um grau...</option>
                             <option value="1">Grau 1 (Independente)</option>
                             <option value="2">Grau 2 (Dependência Parcial)</option>
