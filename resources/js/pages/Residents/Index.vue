@@ -3,10 +3,11 @@ import { ref, watch, onMounted, onUpdated } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
 import residentsRoutes from '@/routes/residents';
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { MagnifyingGlassIcon } from '@heroicons/vue/24/solid';
+import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/24/solid';
 
 import { useRemember } from '@inertiajs/vue3';
 import Tag from '@/components/Form/Tag.vue';
+import BaseButton from '@/components/UI/BaseButton.vue';
 
 export interface Resident {
     id: number;
@@ -88,10 +89,11 @@ const calculateAge = (birthDate: string | undefined) => {
 
 <template>
     <AppLayout>
-        <main>
-            <header class="flex justify-between items-center mx-10 px-10 h-30">
+        <main class="p-12">
+            <header class="flex justify-between items-center mb-12 h-10">
                 <div class="flex w-1/2 gap-2">
-                    <select v-model="state.filter" class="border border-slate-300 rounded-lg px-4 py-2 shadow-sm focus:ring focus:ring-slate-300 focus:outline-none text-slate-400">
+                    <select v-model="state.filter"
+                        class="border border-slate-300 rounded-lg px-4 py-2 shadow-sm focus:ring focus:ring-slate-300 focus:outline-none text-slate-400">
                         <option value="name">Nome</option>
                         <option value="age">Idade</option>
                         <option value="gender">Gênero</option>
@@ -103,28 +105,33 @@ const calculateAge = (birthDate: string | undefined) => {
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                             <MagnifyingGlassIcon class="w-5 h-5 text-slate-400" />
                         </div>
-                        
-                        <input v-if="state.filter === 'name'" v-model="state.search" type="text" placeholder="Buscar residente pelo nome..."
+
+                        <input v-if="state.filter === 'name'" v-model="state.search" type="text"
+                            placeholder="Buscar residente pelo nome..."
                             class="h-10 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none" />
 
-                        <input v-else-if="state.filter === 'age'" v-model="state.search" type="number" placeholder="Buscar pela idade exata..." min="0" max="150"
+                        <input v-else-if="state.filter === 'age'" v-model="state.search" type="number"
+                            placeholder="Buscar pela idade exata..." min="0" max="150"
                             class="h-10 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none" />
 
-                        <select v-else-if="state.filter === 'gender'" v-model="state.search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
+                        <select v-else-if="state.filter === 'gender'" v-model="state.search"
+                            class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
                             <option value="">Selecione um gênero...</option>
                             <option value="Masculino">Masculino</option>
                             <option value="Feminino">Feminino</option>
                             <option value="Outro">Outro</option>
                         </select>
 
-                        <select v-else-if="state.filter === 'disease'" v-model="state.search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
+                        <select v-else-if="state.filter === 'disease'" v-model="state.search"
+                            class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
                             <option value="">Selecione uma comorbidade...</option>
                             <option value="is_diabetic">Diabético</option>
                             <option value="is_hypertensive">Hipertenso</option>
                             <option value="is_epileptic">Epilético</option>
                         </select>
 
-                        <select v-else-if="state.filter === 'dependency_level'" v-model="state.search" class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
+                        <select v-else-if="state.filter === 'dependency_level'" v-model="state.search"
+                            class="text-slate-400 border border-slate-300 rounded-lg pl-10 pr-4 py-2 w-full shadow-sm focus:ring focus:ring-indigo-200 focus:outline-none">
                             <option value="">Selecione um grau...</option>
                             <option value="1">Grau 1 (Independente)</option>
                             <option value="2">Grau 2 (Dependência Parcial)</option>
@@ -132,15 +139,16 @@ const calculateAge = (birthDate: string | undefined) => {
                         </select>
                     </div>
                 </div>
-                <Link v-if="props.filters?.status !== 'history'" href="/residents/create"
-                    class="px-6 py-2.5 bg-emerald-600/80 text-white font-medium rounded-lg hover:bg-emerald-700 transition shadow-sm flex items-center gap-2">
-                    Cadastrar
-                </Link>
+                <BaseButton v-if="props.filters?.status !== 'history'" href="/residents/create"
+                    variant="primary">
+                    <PlusIcon class="w-5 h-5" />
+                    Criar Cadastro
+                </BaseButton>
             </header>
 
-            <ul class="grid grid-cols-4 gap-x-6 gap-y-8 m-10 mt-0 p-10 pt-0">
+            <ul class="grid grid-cols-5 gap-x-6 gap-y-8">
                 <li v-for="resident in residents.data" :key="resident.id"
-                    class="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col p-6">
+                    class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col p-6">
 
                     <header class="flex flex-col items-center mb-5">
                         <img :src="resident.photo_path ? `/storage/${resident.photo_path}` : `https://ui-avatars.com/api/?name=${resident.name}&background=random&color=fff&size=128`"
@@ -189,23 +197,23 @@ const calculateAge = (birthDate: string | undefined) => {
                     </div>
 
                     <footer class="w-full mt-auto">
-                        <Link :href="residentsRoutes.show(resident.id).url"
-                            class="w-full flex items-center justify-center px-4 py-3.5 bg-slate-50 text-slate-700 font-bold rounded-2xl border border-slate-200 hover:bg-emerald-600/80 hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">
+                        <BaseButton :href="residentsRoutes.show(resident.id).url" variant="outline-emerald" class="w-full">
                             Abrir Prontuário
-                        </Link>
+                        </BaseButton>
                     </footer>
                 </li>
             </ul>
-            
+
             <nav aria-label="Paginação" class="flex justify-center items-center mt-8 mb-12 gap-2">
                 <Component :is="link.url ? Link : 'span'" v-for="(link, index) in residents.links" :key="index"
                     :href="link.url"
-                    v-html="link.label.includes('Previous') ? '&lt;' : link.label.includes('Next') ? '&gt;' : link.label"
                     class="px-4 py-2 border rounded-md transition" :class="{
                         'bg-slate-800 text-white font-bold': link.active,
                         'text-slate-600 hover:bg-slate-200': !link.active && link.url,
                         'text-slate-300 bg-slate-50 cursor-not-allowed': !link.url
-                    }" />
+                    }">
+                    <span v-html="String(link.label).includes('previous') ? '&lt;' : String(link.label).includes('next') ? '&gt;' : link.label"></span>
+                </Component>
             </nav>
         </main>
     </AppLayout>

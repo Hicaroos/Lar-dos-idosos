@@ -46,7 +46,7 @@ class ResidentService
             }
         }
 
-        return $query->latest()->paginate(8)->withQueryString();
+        return $query->latest()->paginate(15)->withQueryString();
     }
 
     /**

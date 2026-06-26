@@ -5,7 +5,7 @@ import SelectInput from '@/components/Form/SelectInput.vue';
 import InputError from '@/components/Form/InputError.vue';
 import CheckboxInput from '@/components/Form/CheckboxInput.vue';
 
-import { useForm, Link } from '@inertiajs/vue3';
+import { useForm, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import residentsRoutes from '@/routes/residents';
 import BaseButton from '@/components/UI/BaseButton.vue';
@@ -69,20 +69,36 @@ const handlePhotoUpload = (event: Event) => {
         form.photo_path = input.files[0];
     }
 };
+
+const goBack = () => {
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        router.visit(residentsRoutes.show(props.resident.id).url);
+    }
+};
+
+const deletePhoto = () => {
+    if (confirm('Tem certeza que deseja excluir a foto atual?')) {
+        router.delete(`/residents/${props.resident.id}/photo`, {
+            preserveScroll: true,
+        });
+    }
+};
 </script>
 
 <template>
     <AppLayout>
 
-        <form @submit.prevent="submit" class="w-full bg-slate-100 p-10 flex flex-col gap-8 shadow-sm">
+        <form @submit.prevent="submit" class="w-full bg-slate-100 p-12 flex flex-col gap-8 shadow-sm">
 
-            <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center justify-between mb-8">
                 <div>
                     <h1 class="text-3xl font-bold text-slate-800">Editar Residente</h1>
                     <p class="text-slate-500 mt-1">Atualize as informações do idoso matriculado.</p>
                 </div>
                 <div class="flex gap-4">
-                    <BaseButton variant="outline" :href="residentsRoutes.show(props.resident.id).url">
+                    <BaseButton variant="outline" type="button" @click="goBack">
                         Cancelar
                     </BaseButton>
                     <BaseButton variant="primary" type="submit" :disabled="form.processing">
@@ -111,9 +127,18 @@ const handlePhotoUpload = (event: Event) => {
                         <div>
                             <InputLabel value="Nova Foto (Deixe em branco para manter a atual)" />
                             <div class="flex items-center gap-3">
-                                <img v-if="props.resident.photo_path" :src="`/storage/${props.resident.photo_path}`"
-                                    class="w-10 h-10 rounded-full object-cover border border-slate-200"
-                                    alt="Foto atual">
+                                <div v-if="props.resident.photo_path" class="relative group shrink-0">
+                                    <img :src="`/storage/${props.resident.photo_path}`"
+                                        class="w-10 h-10 rounded-full object-cover border border-slate-200"
+                                        alt="Foto atual">
+                                    <button @click.prevent="deletePhoto" type="button" 
+                                        class="absolute -top-1 -right-1 bg-red-500 hover:bg-red-600 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm" 
+                                        title="Excluir Foto">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
                                 <input @change="handlePhotoUpload" type="file"
                                     accept="image/png, image/jpeg, image/webp"
                                     class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">

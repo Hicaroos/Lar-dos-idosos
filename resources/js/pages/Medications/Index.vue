@@ -56,12 +56,21 @@ const executeDelete = () => {
         });
     }
 };
-const window = globalThis.window;
+
+const goBack = () => {
+    if (window.history.length > 1) {
+        window.history.back();
+    } else {
+        router.visit(`/residents/${props.resident.id}`);
+    }
+};
+
+const windowObj = globalThis.window;
 </script>
 
 <template>
     <AppLayout>
-        <div class="max-w-7xl mx-auto p-10 print:p-0 print:max-w-none">
+        <div class="max-w-7xl mx-auto p-12 print:p-0 print:max-w-none">
             <header class="flex justify-between items-center mb-8 print:mb-4">
                 <div>
                     <h1 class="text-3xl font-bold text-slate-800">Prontuário de Medicamentos</h1>
@@ -72,14 +81,14 @@ const window = globalThis.window;
                     </p>
                 </div>
                 <div class="flex items-center gap-3 print:hidden">
+                    <BaseButton variant="outline" type="button" @click="goBack">
+                        Voltar para o Perfil
+                    </BaseButton>
                     <BaseButton v-if="!resident.deleted_at" variant="primary" @click="openCreateModal">
                         <PlusIcon class="w-5 h-5" />
                         Adicionar Receita
                     </BaseButton>
-                    <BaseButton variant="outline" :href="`/residents/${resident.id}`">
-                        Voltar para o Perfil
-                    </BaseButton>
-                    <BaseButton variant="outline" @click="() => window.print()">
+                    <BaseButton variant="secondary" @click="() => windowObj.print()">
                         Imprimir Receitas
                     </BaseButton>
                 </div>

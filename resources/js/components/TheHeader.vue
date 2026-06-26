@@ -16,7 +16,7 @@ const isResidentDeleted = computed(() => {
 
 
         <div class="text-4xl text-emerald-600 font-signature [-webkit-text-stroke:0.45px_currentColor]">
-            <h1>Lar dos idosos</h1>
+            <h1>Lar do idoso</h1>
         </div>
 
 

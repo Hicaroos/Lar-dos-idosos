@@ -69,9 +69,9 @@ const handlePhotoUpload = (event: Event) => {
 <template>
     <AppLayout>
 
-        <form @submit.prevent="submit" class="w-full bg-slate-100 p-10 flex flex-col gap-8 shadow-sm">
+        <form @submit.prevent="submit" class="w-full bg-slate-100 p-12 flex flex-col gap-6 shadow-sm">
 
-            <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center justify-between mb-8 h-10">
                 <div>
                     <h1 class="text-3xl font-bold text-slate-800">Cadastrar Novo Residente</h1>
                     <p class="text-slate-500 mt-1">Preencha os dados abaixo para matricular um novo idoso.</p>

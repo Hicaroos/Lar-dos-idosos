@@ -128,10 +128,10 @@ const window = globalThis.window;
 <template>
     <AppLayout>
         <div class="w-full h-full">
-            <main class="w-full bg-slate-100 p-10 flex flex-col gap-8 shadow-sm print:bg-white print:p-0 print:shadow-none print:block">
+            <main class="w-full bg-slate-100 p-12 flex flex-col gap-8 shadow-sm print:bg-white print:p-0 print:shadow-none print:block">
 
 
-                <header class="flex items-center gap-8 print:gap-4 bg-white p-8 rounded-2xl shadow-sm border border-slate-200 print:shadow-none print:border-none print:p-0 print:mb-2">
+                <header class="flex items-center gap-8 print:gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 print:shadow-none print:border-none print:p-0 print:mb-2">
                     <img :src="resident.photo_path ? `/storage/${resident.photo_path}` : `https://ui-avatars.com/api/?name=${resident.name}&background=random&color=fff&size=128`"
                         alt="Foto do residente"
                         class="w-32 h-32 rounded-full object-cover border-4 border-slate-100 shadow-sm print:w-16 print:h-16 print:border-2">
@@ -153,7 +153,7 @@ const window = globalThis.window;
 
 
                         <div class="flex items-center gap-3 print:hidden">
-                            <BaseButton variant="secondary" @click="goBack">
+                            <BaseButton variant="outline" @click="goBack">
                                 Voltar
                             </BaseButton>
                             <template v-if="resident.deleted_at">
@@ -171,7 +171,7 @@ const window = globalThis.window;
                                 <BaseButton variant="danger" @click="openDeleteModal(resident.id)">
                                     Excluir
                                 </BaseButton>
-                                <BaseButton variant="outline" @click="() => window.print()">
+                                <BaseButton variant="secondary" @click="() => window.print()">
                                     Imprimir Dados
                                 </BaseButton>
                             </template>
@@ -229,7 +229,7 @@ const window = globalThis.window;
                                     class="text-slate-400 italic font-normal">Sem comorbidades registradas</span>
                             </div>
 
-                            <div class="mt-4 pt-4 print:mt-1 print:pt-1 border-t border-slate-100" v-if="resident.amenities">
+                            <div class="mt-4 pt-4 print:mt-1 print:pt-1" v-if="resident.amenities">
                                 <span class="text-slate-500 block mb-1">Observações / Comodidades:</span>
                                 <p class="text-slate-800">{{ resident.amenities }}</p>
                             </div>

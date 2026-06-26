@@ -22,9 +22,9 @@ const variantClasses = computed(() => {
         case 'secondary':
             return 'bg-slate-500/70 text-white hover:bg-slate-600 focus:ring-slate-500 hover:shadow-md';
         case 'danger':
-            return 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500 hover:shadow-md';
+            return 'bg-red-500 text-white hover:bg-red-700 focus:ring-red-500 hover:shadow-md';
         case 'outline':
-            return 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 focus:ring-slate-300 hover:shadow-md';
+            return 'bg-white border border-slate-300 text-slate-700 hover:bg-slate-200 focus:ring-slate-300 hover:shadow-md';
         case 'outline-emerald':
             return 'bg-slate-50 border border-slate-200 text-slate-700 hover:bg-emerald-600/80 hover:text-white hover:border-emerald-600/80 focus:ring-emerald-300 hover:shadow-md';
         case 'ghost':
