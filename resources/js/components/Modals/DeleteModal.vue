@@ -35,7 +35,7 @@ defineEmits<{
                     Cancelar
                 </BaseButton>
                 <BaseButton variant="danger" @click="$emit('confirm')" class="flex-1">
-                    Sim, Excluir
+                    Excluir
                 </BaseButton>
             </div>
         </div>

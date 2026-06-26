@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DocumentRequest;
 use App\Models\Document;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class DocumentsController extends Controller
@@ -22,9 +23,17 @@ class DocumentsController extends Controller
 
     public function store(DocumentRequest $request)
     {
-        Document::create($request->validated());
+        $validated = $request->validated();
 
-        return redirect()->route('documents.index')->with('success', 'O documento foi criado com sucesso!');
+        if ($request->hasFile('file_path')) {
+            $file = $request->file('file_path');
+            $validated['file_path'] = $file->store('documents', 'public');
+            $validated['file_type'] = $file->getClientOriginalExtension();
+        }
+
+        Document::create($validated);
+
+        return redirect()->back()->with('success', 'O documento foi anexado com sucesso!');
     }
 
     public function show(Document $document)
@@ -52,8 +61,12 @@ class DocumentsController extends Controller
 
     public function destroy(Document $document)
     {
+        if ($document->file_path) {
+            Storage::disk('public')->delete($document->file_path);
+        }
+
         $document->delete();
 
-        return redirect()->route('documents.index')->with('success', 'O documento foi excluído com sucesso!');
+        return redirect()->back()->with('success', 'O documento foi excluído com sucesso!');
     }
 }

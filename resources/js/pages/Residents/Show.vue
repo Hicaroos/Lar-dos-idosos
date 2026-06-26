@@ -8,6 +8,7 @@ import Tag from '@/components/Form/Tag.vue';
 import DeleteModal from '@/components/Modals/DeleteModal.vue';
 import DataTable from '@/components/DataDisplay/DataTable.vue';
 import BaseButton from '@/components/UI/BaseButton.vue';
+import DocumentModal from '@/components/Modals/DocumentModal.vue';
 
 const showDeleteModal = ref(false);
 const residentToDelete = ref<number | null>(null);
@@ -35,6 +36,28 @@ const restoreResident = () => {
 const goBack = () => {
     const url = sessionStorage.getItem('residents_index_url') || residentsRoutes.index().url;
     router.visit(url);
+};
+
+const showDocumentModal = ref(false);
+
+const documentToDelete = ref<number | null>(null);
+const showDeleteDocModal = ref(false);
+
+const openDeleteDocModal = (id: number) => {
+    documentToDelete.value = id;
+    showDeleteDocModal.value = true;
+};
+const closeDeleteDocModal = () => {
+    showDeleteDocModal.value = false;
+    documentToDelete.value = null;
+};
+const confirmDeleteDoc = () => {
+    if (documentToDelete.value !== null) {
+        router.delete(`/documents/${documentToDelete.value}`, {
+            preserveScroll: true,
+            onSuccess: () => closeDeleteDocModal(),
+        });
+    }
 };
 
 const props = defineProps<{
@@ -74,6 +97,13 @@ const props = defineProps<{
         is_epileptic: boolean;
         amenities?: string;
         deleted_at?: string;
+        documents?: {
+            id: number;
+            title: string;
+            file_path: string;
+            file_type: string;
+            created_at: string;
+        }[];
     };
 }>();
 
@@ -246,6 +276,46 @@ const formatDate = (date: string | undefined) => {
                             </div>
                         </div>
                     </DataTable>
+                    
+
+                    <div class="col-span-2">
+                        <DataTable>
+                            <div class="flex justify-between items-center mb-6 border-b pb-2">
+                                <h2 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+                                    Documentos Anexados
+                                </h2>
+                                <BaseButton variant="primary" @click="showDocumentModal = true" class="text-sm py-1.5 px-3">
+                                    Anexar Documento
+                                </BaseButton>
+                            </div>
+                            
+                            <div v-if="resident.documents && resident.documents.length > 0" class="grid grid-cols-2 gap-4">
+                                <div v-for="doc in resident.documents" :key="doc.id" class="flex justify-between items-center p-4 bg-slate-50 rounded-xl border border-slate-100 hover:shadow-md transition-shadow">
+                                    <div class="flex items-center gap-4">
+
+                                        <div>
+                                            <h4 class="font-bold text-slate-700">{{ doc.title }}</h4>
+                                            <p class="text-xs text-slate-500 mt-1">Anexado em {{ formatDate(doc.created_at?.split('T')[0]) }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <a :href="`/storage/${doc.file_path}`" target="_blank" class="text-blue-600 hover:text-blue-800 text-xs font-bold px-3 py-2 rounded-lg bg-blue-50 transition-colors uppercase tracking-wider">
+                                            Acessar
+                                        </a>
+                                        <button @click="openDeleteDocModal(doc.id)" class="text-red-600 hover:text-red-800 text-xs font-bold px-3 py-2 rounded-lg bg-red-50 transition-colors uppercase tracking-wider">
+                                            Excluir
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else class="text-center py-8 text-slate-500 text-sm bg-slate-50 rounded-xl border border-dashed border-slate-200 flex flex-col items-center justify-center">
+                                <svg class="w-12 h-12 text-slate-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Nenhum documento foi anexado a este residente.
+                            </div>
+                        </DataTable>
+                    </div>
                 </div>
 
             </main>
@@ -255,5 +325,11 @@ const formatDate = (date: string | undefined) => {
         <DeleteModal :show="showDeleteModal" :title="resident.deleted_at ? 'Excluir Definitivamente?' : 'Excluir Residente?'"
             :message="resident.deleted_at ? 'Você está prestes a excluir todos os dados deste residente permanentemente. Esta ação não pode ser desfeita.' : 'Você está prestes a excluir todos os dados deste residente.'" @close="closeDeleteModal"
             @confirm="confirmDelete" />
+
+        <DeleteModal :show="showDeleteDocModal" title="Excluir Documento?"
+            message="Tem certeza que deseja excluir este documento? O arquivo será removido permanentemente." @close="closeDeleteDocModal"
+            @confirm="confirmDeleteDoc" />
+            
+        <DocumentModal :show="showDocumentModal" :resident-id="resident.id" @close="showDocumentModal = false" />
     </AppLayout>
 </template>

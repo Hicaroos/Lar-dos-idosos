@@ -23,7 +23,7 @@ class ResidentsController extends Controller
             $search = $request->search;
 
             if ($filter === 'name') {
-                $query->where('name', 'like', '%' . $search . '%');
+                $query->where('name', 'like', '%'.$search.'%');
             } elseif ($filter === 'gender') {
                 $query->where('gender', $search);
             } elseif ($filter === 'disease') {
@@ -70,7 +70,7 @@ class ResidentsController extends Controller
 
     public function show(Resident $resident)
     {
-        $resident->load('medications');
+        $resident->load(['medications', 'documents']);
 
         return Inertia::render(
             'Residents/Show',

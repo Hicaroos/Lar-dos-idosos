@@ -25,7 +25,7 @@ class DocumentRequest extends FormRequest
         return [
             'resident_id' => ['required', 'exists:residents,id'],
             'title' => ['required', 'string', 'max:255'],
-            'file_path' => ['required', 'string'],
+            'file_path' => ['required', 'file', 'max:10240'], // 10MB max
             'file_type' => ['nullable', 'string', 'max:255'],
         ];
     }
