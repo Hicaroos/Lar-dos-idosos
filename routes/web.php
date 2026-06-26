@@ -18,3 +18,16 @@ Route::resource('residents.medications', MedicationsController::class)->shallow(
 Route::resource('documents', DocumentsController::class);
 
 Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
+
+Route::get('storage/{path}', function ($path) {
+    $absolutePath = storage_path('app/public/' . $path);
+    if (!file_exists($absolutePath)) {
+        abort(404);
+    }
+    
+    $mimeType = mime_content_type($absolutePath);
+    return response()->file($absolutePath, [
+        'Content-Type' => $mimeType,
+        'Cache-Control' => 'public, max-age=86400'
+    ]);
+})->where('path', '.*')->name('storage.serve');
