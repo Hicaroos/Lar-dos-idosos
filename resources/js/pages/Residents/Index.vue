@@ -151,7 +151,7 @@ const calculateAge = (birthDate: string | undefined) => {
                     class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col p-6">
 
                     <header class="flex flex-col items-center mb-5">
-                        <img :src="resident.photo_path ? `/storage/${resident.photo_path}` : `https://ui-avatars.com/api/?name=${resident.name}&background=random&color=fff&size=128`"
+                        <img :src="resident.photo_path ? `/uploads/${resident.photo_path}` : `https://ui-avatars.com/api/?name=${resident.name}&background=random&color=fff&size=128`"
                             alt="Foto do residente"
                             class="w-24 h-24 rounded-full object-cover border-4 border-slate-50 shadow-sm mb-4">
 

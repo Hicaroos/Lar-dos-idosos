@@ -19,7 +19,7 @@ Route::resource('documents', DocumentsController::class);
 
 Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
 
-Route::get('storage/{path}', function ($path) {
+Route::get('uploads/{path}', function ($path) {
     $absolutePath = storage_path('app/public/' . $path);
     if (!file_exists($absolutePath)) {
         abort(404);
@@ -30,4 +30,4 @@ Route::get('storage/{path}', function ($path) {
         'Content-Type' => $mimeType,
         'Cache-Control' => 'public, max-age=86400'
     ]);
-})->where('path', '.*')->name('storage.serve');
+})->where('path', '.*')->name('uploads.serve');
