@@ -38,21 +38,21 @@ const themeClasses = {
 
 <template>
     <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        <div :class="[themeClasses[theme].bg, themeClasses[theme].border, 'border-b p-4 flex items-center gap-3']">
-            <div :class="['p-2 rounded-lg', themeClasses[theme].iconBg, themeClasses[theme].iconText]">
+        <div :class="[themeClasses[theme].bg, themeClasses[theme].border, 'border-b p-4 print:p-2 flex items-center gap-3 print:gap-2']">
+            <div :class="['p-2 print:p-1 rounded-lg', themeClasses[theme].iconBg, themeClasses[theme].iconText]">
                 <slot name="icon"></slot>
             </div>
-            <h2 :class="['text-lg font-bold', themeClasses[theme].titleText]">{{ title }}</h2>
+            <h2 :class="['text-lg print:text-base font-bold', themeClasses[theme].titleText]">{{ title }}</h2>
         </div>
         
         <div class="p-0 overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-slate-50 text-slate-500 text-sm border-b border-slate-200">
-                        <th class="py-3 px-6 font-semibold w-2/5">Medicamento</th>
-                        <th class="py-3 px-6 font-semibold">Dosagem</th>
-                        <th class="py-3 px-6 font-semibold w-32">Horário</th>
-                        <th v-if="!readonly" class="py-3 px-6 font-semibold w-24 text-right">Ações</th>
+                        <th class="py-3 px-6 print:py-1 print:px-2 font-semibold w-2/5">Medicamento</th>
+                        <th class="py-3 px-6 print:py-1 print:px-2 font-semibold">Dosagem</th>
+                        <th class="py-3 px-6 print:py-1 print:px-2 font-semibold w-32">Horário</th>
+                        <th v-if="!readonly" class="py-3 px-6 font-semibold w-24 text-right print:hidden">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,10 +60,10 @@ const themeClasses = {
                         <td :colspan="readonly ? 3 : 4" class="py-8 text-center text-slate-400 italic">Nenhum medicamento para este turno.</td>
                     </tr>
                     <tr v-for="med in medications" :key="med.id" class="border-b border-slate-100 hover:bg-slate-50 transition">
-                        <td class="py-4 px-6 font-medium text-slate-800 break-words">{{ med.name }}</td>
-                        <td class="py-4 px-6 text-slate-600 break-words">{{ med.dose }}</td>
-                        <td class="py-4 px-6 text-slate-600 font-mono">{{ med.time }}</td>
-                        <td v-if="!readonly" class="py-4 px-6 text-right">
+                        <td class="py-4 px-6 print:py-1 print:px-2 font-medium text-slate-800 break-words">{{ med.name }}</td>
+                        <td class="py-4 px-6 print:py-1 print:px-2 text-slate-600 break-words">{{ med.dose }}</td>
+                        <td class="py-4 px-6 print:py-1 print:px-2 text-slate-600 font-mono">{{ med.time }}</td>
+                        <td v-if="!readonly" class="py-4 px-6 text-right print:hidden">
                             <div class="flex items-center justify-end gap-2">
                                 <button @click="$emit('edit', med)" class="text-slate-400 hover:text-emerald-600 transition p-1" title="Editar">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

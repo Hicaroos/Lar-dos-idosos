@@ -5,7 +5,7 @@ import { UserGroupIcon, ClockIcon, BellIcon } from '@heroicons/vue/24/outline';
 
 <template>
     <header
-        class="w-full py-4 px-8 h-20 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200/60 shadow-sm transition-all duration-300">
+        class="w-full py-4 px-8 h-20 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200/60 shadow-sm transition-all duration-300 print:hidden">
 
 
         <div class="text-4xl text-emerald-600 font-signature [-webkit-text-stroke:0.45px_currentColor]">

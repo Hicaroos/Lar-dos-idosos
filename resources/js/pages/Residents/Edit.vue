@@ -23,7 +23,9 @@ const form = useForm({
     name: props.resident.name || '',
     gender: props.resident.gender || '',
     birth_date: props.resident.birth_date || '',
-    parentage: props.resident.parentage || '',
+    father_name: props.resident.father_name || '',
+    mother_name: props.resident.mother_name || '',
+    blood_type: props.resident.blood_type || '',
     naturalness: props.resident.naturalness || '',
     religion: props.resident.religion || '',
     phone_numbers: props.resident.phone_numbers || '',
@@ -149,7 +151,7 @@ const handlePhotoUpload = (event: Event) => {
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-3 gap-4">
                             <div>
                                 <InputLabel value="Naturalidade" />
                                 <TextInput v-model="form.naturalness" type="text" />
@@ -158,11 +160,31 @@ const handlePhotoUpload = (event: Event) => {
                                 <InputLabel value="Religião" />
                                 <TextInput v-model="form.religion" type="text" />
                             </div>
+                            <div>
+                                <InputLabel value="Tipo Sanguíneo" />
+                                <SelectInput v-model="form.blood_type">
+                                    <option value="">Selecione</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </SelectInput>
+                            </div>
                         </div>
 
-                        <div>
-                            <InputLabel value="Filiação (Nome dos pais)" />
-                            <TextInput v-model="form.parentage" type="text" />
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <InputLabel value="Filiação 1" />
+                                <TextInput v-model="form.mother_name" type="text" />
+                            </div>
+                            <div>
+                                <InputLabel value="Filiação 2" />
+                                <TextInput v-model="form.father_name" type="text" />
+                            </div>
                         </div>
                         <div>
                             <InputLabel value="Telefones de Contato" />

@@ -69,7 +69,9 @@ const props = defineProps<{
         name: string;
         gender: string;
         birth_date: string;
-        parentage?: string;
+        father_name?: string;
+        mother_name?: string;
+        blood_type?: string;
         naturalness?: string;
         religion?: string;
         phone_numbers?: string;
@@ -116,24 +118,26 @@ const formatDate = (date: string | undefined) => {
     return date;
 };
 
+
+const window = globalThis.window;
 </script>
 
 <template>
     <AppLayout>
         <div class="w-full h-full">
-            <main class="w-full bg-slate-100 p-10 flex flex-col gap-8 shadow-sm">
+            <main class="w-full bg-slate-100 p-10 flex flex-col gap-8 shadow-sm print:bg-white print:p-0 print:shadow-none print:block">
 
 
-                <header class="flex items-center gap-8 bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                <header class="flex items-center gap-8 print:gap-4 bg-white p-8 rounded-2xl shadow-sm border border-slate-200 print:shadow-none print:border-none print:p-0 print:mb-2">
                     <img :src="resident.photo_path ? `/storage/${resident.photo_path}` : `https://ui-avatars.com/api/?name=${resident.name}&background=random&color=fff&size=128`"
                         alt="Foto do residente"
-                        class="w-32 h-32 rounded-full object-cover border-4 border-slate-100 shadow-sm">
+                        class="w-32 h-32 rounded-full object-cover border-4 border-slate-100 shadow-sm print:w-16 print:h-16 print:border-2">
 
                     <div class="w-full flex justify-between items-center">
                         <div>
                             <h2 class="font-bold text-slate-500 uppercase tracking-widest text-xs mb-1">N° do
                                 prontuário: {{ resident.registration_number || 'N/A' }}</h2>
-                            <h1 class="text-3xl font-bold text-slate-800 flex items-center gap-3">
+                            <h1 class="text-3xl print:text-2xl font-bold text-slate-800 flex items-center gap-3">
                                 {{ resident.name }}
                                 <Tag v-if="resident.deleted_at" cor="slate" text="No Histórico" class="text-sm" />
                             </h1>
@@ -145,7 +149,7 @@ const formatDate = (date: string | undefined) => {
                         </div>
 
 
-                        <div class="flex items-center gap-3">
+                        <div class="flex items-center gap-3 print:hidden">
                             <BaseButton variant="secondary" @click="goBack">
                                 Voltar
                             </BaseButton>
@@ -164,23 +168,27 @@ const formatDate = (date: string | undefined) => {
                                 <BaseButton variant="danger" @click="openDeleteModal(resident.id)">
                                     Excluir
                                 </BaseButton>
+                                <BaseButton variant="outline" @click="() => window.print()">
+                                    Imprimir Dados
+                                </BaseButton>
                             </template>
                         </div>
                     </div>
                 </header>
 
 
-                <div class="grid grid-cols-2 gap-6 w-full">
+                <div class="grid grid-cols-2 gap-6 w-full print:grid print:grid-cols-2 print:gap-2">
 
                     <DataTable>
-                        <h2 class="font-bold text-lg mb-6 text-slate-800 flex items-center gap-2 border-b pb-2">
+                        <h2 class="font-bold text-lg mb-6 print:mb-2 text-slate-800 flex items-center gap-2 border-b pb-2 print:pb-1">
                             Dados Pessoais
                         </h2>
-                        <div class="space-y-3 text-sm">
+                        <div class="space-y-3 print:space-y-1 text-sm">
                             <InfoRow label="Gênero:" :value="resident.gender" />
                             <InfoRow label="Nascimento:" :value="formatDate(resident.birth_date)" />
                             <InfoRow label="Naturalidade:" :value="resident.naturalness" />
-                            <InfoRow label="Filiação:" :value="resident.parentage" />
+                            <InfoRow label="Filiação 1:" :value="resident.mother_name" />
+                            <InfoRow label="Filiação 2:" :value="resident.father_name" />
                             <InfoRow label="Religião:" :value="resident.religion" />
                             <InfoRow label="Telefones:" :value="resident.phone_numbers" />
                         </div>
@@ -188,15 +196,27 @@ const formatDate = (date: string | undefined) => {
 
 
                     <DataTable class="flex flex-col">
-                        <h2 class="font-bold text-lg mb-6 text-slate-800 flex items-center gap-2 border-b pb-2">
+                        <h2 class="font-bold text-lg mb-6 print:mb-2 text-slate-800 flex items-center gap-2 border-b pb-2 print:pb-1">
                             Saúde e Dependência
                         </h2>
-                        <div class="space-y-3 text-sm flex-1 flex flex-col">
+                        <div class="space-y-3 print:space-y-1 text-sm flex-1 flex flex-col">
                             <InfoRow label="Grau de Dependência:">
                                 Grau {{ resident.dependency_level || '-' }}
                             </InfoRow>
 
-                            <div class="mt-4 flex flex-wrap gap-2 font-bold text-sm text-slate-800">
+                            <InfoRow label="Tipo Sanguíneo:">
+                                <template v-if="resident.blood_type">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-red-500 text-red-600 font-bold bg-red-50 print:hidden">
+                                        {{ resident.blood_type }}
+                                    </span>
+                                    <span class="hidden print:inline text-slate-800">
+                                        {{ resident.blood_type }}
+                                    </span>
+                                </template>
+                                <span v-else>-</span>
+                            </InfoRow>
+
+                            <div class="mt-4 print:mt-1 flex flex-wrap gap-2 font-bold text-sm text-slate-800">
                                 <Tag v-if="resident.is_diabetic" cor="emerald" text="Diabético"></Tag>
                                 <Tag v-if="resident.is_hypertensive" cor="sky" text="Hipertenso"></Tag>
                                 <Tag v-if="resident.is_epileptic" cor="purple" text="Epilético"></Tag>
@@ -206,12 +226,12 @@ const formatDate = (date: string | undefined) => {
                                     class="text-slate-400 italic font-normal">Sem comorbidades registradas</span>
                             </div>
 
-                            <div class="mt-4 pt-4 border-t border-slate-100" v-if="resident.amenities">
+                            <div class="mt-4 pt-4 print:mt-1 print:pt-1 border-t border-slate-100" v-if="resident.amenities">
                                 <span class="text-slate-500 block mb-1">Observações / Comodidades:</span>
-                                <p class="text-slate-800 break-all">{{ resident.amenities }}</p>
+                                <p class="text-slate-800">{{ resident.amenities }}</p>
                             </div>
                             
-                            <div class="mt-auto pt-4">
+                            <div class="mt-auto pt-4 print:hidden">
                                 <BaseButton variant="primary" :href="`/residents/${resident.id}/medications`" class="w-full">
                                     Ver medicamentos
                                 </BaseButton>
@@ -220,11 +240,11 @@ const formatDate = (date: string | undefined) => {
                     </DataTable>
 
 
-                    <DataTable>
-                        <h2 class="font-bold text-lg mb-6 text-slate-800 flex items-center gap-2 border-b pb-2">
+                    <DataTable class="print:col-span-2">
+                        <h2 class="font-bold text-lg mb-6 print:mb-2 text-slate-800 flex items-center gap-2 border-b pb-2 print:pb-1">
                             Documentação
                         </h2>
-                        <div class="space-y-3 text-sm">
+                        <div class="space-y-3 print:space-y-1 text-sm">
                             <InfoRow label="CPF:" :value="resident.cpf" />
                             <InfoRow label="RG:">
                                 {{ resident.rg || '-' }} {{ resident.rg_ssp ? `(${resident.rg_ssp})` : '' }}
@@ -237,7 +257,7 @@ const formatDate = (date: string | undefined) => {
                                 ${resident.professional_card_series})` : '' }}
                             </InfoRow>
 
-                            <div class="pt-2 mt-2 border-t border-slate-50">
+                            <div class="pt-2 mt-2 print:pt-1 print:mt-1 border-t border-slate-50">
                                 <span class="text-slate-500 block mb-2">Certidão de Nascimento:</span>
                                 <div class="grid grid-cols-3 gap-2 bg-slate-50 p-2 rounded">
                                     <div><span class="text-xs text-slate-400 block">Número</span> <span
@@ -255,11 +275,11 @@ const formatDate = (date: string | undefined) => {
                     </DataTable>
 
 
-                    <DataTable>
-                        <h2 class="font-bold text-lg mb-6 text-slate-800 flex items-center gap-2 border-b pb-2">
+                    <DataTable class="print:col-span-2">
+                        <h2 class="font-bold text-lg mb-6 print:mb-2 text-slate-800 flex items-center gap-2 border-b pb-2 print:pb-1">
                             Endereço de Origem
                         </h2>
-                        <div class="space-y-3 text-sm">
+                        <div class="space-y-3 print:space-y-1 text-sm">
                             <InfoRow label="CEP:" :value="resident.zip_code" />
                             <InfoRow label="Endereço:">
                                 {{ resident.address || '-' }}, nº {{ resident.address_number || 'S/N' }}
@@ -268,7 +288,7 @@ const formatDate = (date: string | undefined) => {
                             <InfoRow label="Cidade/UF:">
                                 {{ resident.city || '-' }} / {{ resident.state || '-' }}
                             </InfoRow>
-                            <div class="mt-2 pt-2 border-t border-slate-50 flex flex-col">
+                            <div class="mt-2 pt-2 print:mt-1 print:pt-1 border-t border-slate-50 flex flex-col">
                                 <span class="text-slate-500">Ponto de Referência:</span>
                                 <span class="font-medium text-slate-800 mt-1">
                                     {{ resident.reference_point || 'Não informado' }}
@@ -278,7 +298,7 @@ const formatDate = (date: string | undefined) => {
                     </DataTable>
                     
 
-                    <div class="col-span-2">
+                    <div class="col-span-2 print:hidden">
                         <DataTable>
                             <div class="flex justify-between items-center mb-6 border-b pb-2">
                                 <h2 class="font-bold text-lg text-slate-800 flex items-center gap-2">
