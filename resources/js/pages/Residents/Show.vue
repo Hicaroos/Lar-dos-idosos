@@ -2,12 +2,14 @@
 import { ref } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { Link, router } from '@inertiajs/vue3';
+import { ArrowLeftIcon, ArrowPathIcon, TrashIcon, PencilIcon, PrinterIcon } from '@heroicons/vue/24/outline';
 import residentsRoutes from '@/routes/residents';
 import InfoRow from '@/components/DataDisplay/InfoRow.vue';
 import Tag from '@/components/Form/Tag.vue';
 import DeleteModal from '@/components/Modals/DeleteModal.vue';
 import DataTable from '@/components/DataDisplay/DataTable.vue';
 import BaseButton from '@/components/UI/BaseButton.vue';
+import PrintHeader from '@/components/UI/PrintHeader.vue';
 import DocumentModal from '@/components/Modals/DocumentModal.vue';
 
 const showDeleteModal = ref(false);
@@ -61,6 +63,16 @@ const confirmDeleteDoc = () => {
             onSuccess: () => closeDeleteDocModal(),
         });
     }
+};
+
+const openDoc = (path: string) => window.open(`/storage/${path}`, '_blank');
+const downloadDoc = (doc: any) => {
+    const a = document.createElement('a');
+    a.href = `/storage/${doc.file_path}`;
+    a.download = doc.title || 'documento';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 };
 
 const props = defineProps<{
@@ -130,7 +142,9 @@ const window = globalThis.window;
         <div class="w-full h-full">
             <main class="w-full bg-slate-100 p-12 flex flex-col gap-8 shadow-sm print:bg-white print:p-0 print:shadow-none print:block">
 
-
+                <!-- Header só visível na impressão -->
+                <PrintHeader title="Prontuário de Residente" />
+                
                 <header class="flex items-center gap-8 print:gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 print:shadow-none print:border-none print:p-0 print:mb-2">
                     <img :src="resident.photo_path ? `/storage/${resident.photo_path}` : `https://ui-avatars.com/api/?name=${resident.name}&background=random&color=fff&size=128`"
                         alt="Foto do residente"
@@ -154,24 +168,30 @@ const window = globalThis.window;
 
                         <div class="flex items-center gap-3 print:hidden">
                             <BaseButton variant="outline" @click="goBack">
+                                <ArrowLeftIcon class="w-5 h-5" />
                                 Voltar
                             </BaseButton>
                             <template v-if="resident.deleted_at">
                                 <BaseButton variant="primary" @click="restoreResident">
+                                    <ArrowPathIcon class="w-5 h-5" />
                                     Restaurar
                                 </BaseButton>
                                 <BaseButton variant="danger" @click="openDeleteModal(resident.id)">
+                                    <TrashIcon class="w-5 h-5" />
                                     Excluir Definitivamente
                                 </BaseButton>
                             </template>
                             <template v-else>
                                 <BaseButton variant="primary" :href="residentsRoutes.edit(resident.id).url">
+                                    <PencilIcon class="w-5 h-5" />
                                     Editar
                                 </BaseButton>
                                 <BaseButton variant="danger" @click="openDeleteModal(resident.id)">
+                                    <TrashIcon class="w-5 h-5" />
                                     Excluir
                                 </BaseButton>
                                 <BaseButton variant="secondary" @click="() => window.print()">
+                                    <PrinterIcon class="w-5 h-5" />
                                     Imprimir Dados
                                 </BaseButton>
                             </template>
@@ -219,7 +239,7 @@ const window = globalThis.window;
                                 <span v-else>-</span>
                             </InfoRow>
 
-                            <div class="mt-4 print:mt-1 flex flex-wrap gap-2 font-bold text-sm text-slate-800">
+                            <div class="print:mt-1 flex flex-wrap gap-2 font-bold text-sm text-slate-800">
                                 <Tag v-if="resident.is_diabetic" cor="emerald" text="Diabético"></Tag>
                                 <Tag v-if="resident.is_hypertensive" cor="sky" text="Hipertenso"></Tag>
                                 <Tag v-if="resident.is_epileptic" cor="purple" text="Epilético"></Tag>
@@ -229,7 +249,7 @@ const window = globalThis.window;
                                     class="text-slate-400 italic font-normal">Sem comorbidades registradas</span>
                             </div>
 
-                            <div class="mt-4 pt-4 print:mt-1 print:pt-1" v-if="resident.amenities">
+                            <div class="pt-4 print:mt-1 print:pt-1" v-if="resident.amenities">
                                 <span class="text-slate-500 block mb-1">Observações / Comodidades:</span>
                                 <p class="text-slate-800">{{ resident.amenities }}</p>
                             </div>
@@ -307,7 +327,7 @@ const window = globalThis.window;
                                 <h2 class="font-bold text-lg text-slate-800 flex items-center gap-2">
                                     Documentos Anexados
                                 </h2>
-                                <BaseButton variant="primary" @click="showDocumentModal = true" class="text-sm py-1.5 px-3">
+                                <BaseButton v-if="!resident.deleted_at" variant="primary" @click="showDocumentModal = true" class="text-sm py-1.5 px-3">
                                     Anexar Documento
                                 </BaseButton>
                             </div>
@@ -322,12 +342,15 @@ const window = globalThis.window;
                                         </div>
                                     </div>
                                     <div class="flex items-center gap-2">
-                                        <a :href="`/storage/${doc.file_path}`" target="_blank" class="text-blue-600 hover:text-blue-800 text-xs font-bold px-3 py-2 rounded-lg bg-blue-50 transition-colors uppercase tracking-wider">
+                                        <BaseButton @click="openDoc(doc.file_path)" variant="secondary" class="!px-3 !py-2 !text-xs uppercase tracking-wider font-bold">
                                             Acessar
-                                        </a>
-                                        <button @click="openDeleteDocModal(doc.id)" class="text-red-600 hover:text-red-800 text-xs font-bold px-3 py-2 rounded-lg bg-red-50 transition-colors uppercase tracking-wider">
+                                        </BaseButton>
+                                        <BaseButton @click="downloadDoc(doc)" variant="primary" class="!px-3 !py-2 !text-xs uppercase tracking-wider font-bold">
+                                            Baixar
+                                        </BaseButton>
+                                        <BaseButton v-if="!resident.deleted_at" @click="openDeleteDocModal(doc.id)" variant="danger" class="!px-3 !py-2 !text-xs uppercase tracking-wider font-bold">
                                             Excluir
-                                        </button>
+                                        </BaseButton>
                                     </div>
                                 </div>
                             </div>

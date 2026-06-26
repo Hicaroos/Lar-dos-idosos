@@ -2,11 +2,12 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref, computed } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
-import { SunIcon, MoonIcon, PlusIcon } from '@heroicons/vue/24/outline';
+import { SunIcon, MoonIcon, PlusIcon, ArrowLeftIcon, PrinterIcon } from '@heroicons/vue/24/outline';
 import MedicationTable from '@/components/DataDisplay/MedicationTable.vue';
 import MedicationModal from '@/components/Modals/MedicationModal.vue';
 import DeleteModal from '@/components/Modals/DeleteModal.vue';
 import BaseButton from '@/components/UI/BaseButton.vue';
+import PrintHeader from '@/components/UI/PrintHeader.vue';
 import medicationsRoutes from '@/routes/medications';
 import Tag from '@/components/Form/Tag.vue';
 
@@ -71,6 +72,7 @@ const windowObj = globalThis.window;
 <template>
     <AppLayout>
         <div class="max-w-7xl mx-auto p-12 print:p-0 print:max-w-none">
+            <PrintHeader :title="'Medicamentos - ' + resident.name" />
             <header class="flex justify-between items-center mb-8 print:mb-4">
                 <div>
                     <h1 class="text-3xl font-bold text-slate-800">Prontuário de Medicamentos</h1>
@@ -82,13 +84,15 @@ const windowObj = globalThis.window;
                 </div>
                 <div class="flex items-center gap-3 print:hidden">
                     <BaseButton variant="outline" type="button" @click="goBack">
+                        <ArrowLeftIcon class="w-5 h-5 mr-2" />
                         Voltar para o Perfil
                     </BaseButton>
                     <BaseButton v-if="!resident.deleted_at" variant="primary" @click="openCreateModal">
-                        <PlusIcon class="w-5 h-5" />
+                        <PlusIcon class="w-5 h-5 mr-2" />
                         Adicionar Receita
                     </BaseButton>
                     <BaseButton variant="secondary" @click="() => windowObj.print()">
+                        <PrinterIcon class="w-5 h-5 mr-2" />
                         Imprimir Receitas
                     </BaseButton>
                 </div>
