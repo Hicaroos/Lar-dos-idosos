@@ -89,7 +89,7 @@ const deletePhoto = () => {
 
 <template>
     
-        <form @submit.prevent="submit" class="w-full p-12 flex flex-col gap-8">
+        <form @submit.prevent="submit" class="w-full p-12 pt-8 flex flex-col gap-8">
 
             <div class="flex items-center justify-between mb-8">
                 <div>
