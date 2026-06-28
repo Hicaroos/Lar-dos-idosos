@@ -65,10 +65,10 @@ const confirmDeleteDoc = () => {
     }
 };
 
-const openDoc = (path: string) => window.open(`/storage/${path}`, '_blank');
+const openDoc = (path: string) => window.open(`/uploads/${path}`, '_blank');
 const downloadDoc = (doc: any) => {
     const a = document.createElement('a');
-    a.href = `/storage/${doc.file_path}`;
+    a.href = `/uploads/${doc.file_path}`;
     a.download = doc.title || 'documento';
     document.body.appendChild(a);
     a.click();
@@ -146,7 +146,7 @@ const window = globalThis.window;
                 <PrintHeader title="Prontuário de Residente" />
                 
                 <header class="flex items-center gap-8 print:gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 print:shadow-none print:border-none print:p-0 print:mb-2">
-                    <img :src="resident.photo_path ? `/storage/${resident.photo_path}` : `https://ui-avatars.com/api/?name=${resident.name}&background=random&color=fff&size=128`"
+                    <img :src="resident.photo_path ? `/uploads/${resident.photo_path}` : `https://ui-avatars.com/api/?name=${resident.name}&background=random&color=fff&size=128`"
                         alt="Foto do residente"
                         class="w-32 h-32 rounded-full object-cover border-4 border-slate-100 shadow-sm print:w-16 print:h-16 print:border-2">
 
