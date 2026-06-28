@@ -125,7 +125,7 @@ const deletePhoto = () => {
                             <InputLabel value="Nova Foto (Deixe em branco para manter a atual)" />
                             <div class="flex items-center gap-3">
                                 <div v-if="props.resident.photo_path" class="relative group shrink-0">
-                                    <img :src="`/storage/${props.resident.photo_path}`"
+                                    <img :src="`/uploads/${props.resident.photo_path}`"
                                         class="w-10 h-10 rounded-full object-cover border border-slate-200"
                                         alt="Foto atual">
                                     <button @click.prevent="deletePhoto" type="button" 

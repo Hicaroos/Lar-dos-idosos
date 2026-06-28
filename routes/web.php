@@ -1,12 +1,18 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\MedicationsController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ResidentsController;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/residents')->name('home');
+Route::get('login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware('auth.password')->group(function () {
+    Route::redirect('/', '/residents')->name('home');
 
 Route::post('residents/{resident}/restore', [ResidentsController::class, 'restore'])->name('residents.restore')->withTrashed();
 Route::delete('residents/{resident}/force', [ResidentsController::class, 'forceDelete'])->name('residents.forceDelete')->withTrashed();
@@ -19,7 +25,7 @@ Route::resource('documents', DocumentsController::class);
 
 Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
 
-Route::get('storage/{path}', function ($path) {
+Route::get('uploads/{path}', function ($path) {
     $absolutePath = storage_path('app/public/' . $path);
     if (!file_exists($absolutePath)) {
         abort(404);
@@ -30,4 +36,5 @@ Route::get('storage/{path}', function ($path) {
         'Content-Type' => $mimeType,
         'Cache-Control' => 'public, max-age=86400'
     ]);
-})->where('path', '.*')->name('storage.serve');
+})->where('path', '.*')->name('uploads.serve');
+});
