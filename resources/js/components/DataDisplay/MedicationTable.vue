@@ -15,31 +15,31 @@ defineEmits<{
 
 const themeClasses = {
     purple: {
-        bg: 'bg-purple-100',
+        bg: 'bg-[#5C9280]',
         border: 'border-purple-100',
-        iconBg: 'bg-purple-100',
-        iconText: 'text-purple-600',
-        titleText: 'text-purple-800'
+        iconBg: 'bg-green-50',
+        iconText: 'text-slate-900',
+        titleText: 'text-slate-900'
     },
     sky: {
-        bg: 'bg-sky-100',
+        bg: 'bg-[#92baac]',
         border: 'border-sky-100',
-        iconBg: 'bg-sky-100',
-        iconText: 'text-sky-600',
-        titleText: 'text-sky-800'
+        iconBg: 'bg-green-50',
+        iconText: 'text-slate-900',
+        titleText: 'text-slate-900'
     },
     emerald: {
-        bg: 'bg-emerald-100',
-        border: 'border-emerald-100',
-        iconBg: 'bg-emerald-100',
-        iconText: 'text-emerald-600',
-        titleText: 'text-emerald-800'
+        bg: 'bg-[#A2C4B9]',
+        border: 'border-[#9B59A5]/10',
+        iconBg: 'bg-green-50',
+        iconText: 'text-slate-900',
+        titleText: 'text-slate-900'
     }
 };
 </script>
 
 <template>
-    <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+    <section class="bg-white rounded-2xl shadow-md overflow-hidden print:border border-slate-200 ">
         <div :class="[themeClasses[theme].bg, themeClasses[theme].border, 'border-b p-4 print:p-2 flex items-center gap-3 print:gap-2']">
             <div :class="['p-2 print:p-1 rounded-lg', themeClasses[theme].iconBg, themeClasses[theme].iconText]">
                 <slot name="icon"></slot>

@@ -7,12 +7,13 @@ const props = defineProps<{
 }>();
 
 const colors = {
-    purple: "bg-purple-300",
-    emerald: "bg-emerald-400/70",
-    sky: "bg-sky-300/70",
+    purple: "bg-[#9B59A5] text-white shadow-sm print:bg-white print:text-slate-900 print:border print:border-slate-400 print:shadow-none",
+    violet: "bg-[#7559A5] text-white shadow-sm print:bg-white print:text-slate-900 print:border print:border-slate-400 print:shadow-none",
+    indigo: "bg-[#5963A5] text-white shadow-sm print:bg-white print:text-slate-900 print:border print:border-slate-400 print:shadow-none",
+    slate: "bg-[#E2E8F0] text-[#475569] border border-slate-300/50 shadow-sm print:bg-white print:text-slate-900 print:border-slate-400 print:shadow-none",
 }
 
-const classColor = computed(() => colors[props.cor as keyof typeof colors] || "bg-slate-200");
+const classColor = computed(() => colors[props.cor as keyof typeof colors] || colors.slate);
 
 
 </script>

@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+
+defineOptions({ layout: AppLayout });
 import BaseButton from '@/components/UI/BaseButton.vue';
 import PrintHeader from '@/components/UI/PrintHeader.vue';
+import NavTabs from '@/components/UI/NavTabs.vue';
+import NavTab from '@/components/UI/NavTab.vue';
 import { PrinterIcon } from '@heroicons/vue/24/outline';
 import { Link } from '@inertiajs/vue3';
 import residentsRoutes from '@/routes/residents';
@@ -21,13 +25,12 @@ const printReport = () => {
 </script>
 
 <template>
-    <AppLayout>
-        <main class="p-12 print:p-0 print:m-0 w-full max-w-7xl mx-auto">
+            <main class="p-8 print:p-0 print:m-0 w-full max-w-7xl mx-auto">
 
-            <header class="flex justify-between items-center mb-8 print:hidden">
+            <header class="flex justify-between mb-8 print:hidden">
                 <div>
-                    <h1 class="text-3xl font-bold text-slate-800">Relatórios</h1>
-                    <p class="text-slate-500 mt-1">Visualize e imprima relatórios dos residentes ativos.</p>
+                    <h1 class="text-3xl font-bold text-emerald-950 drop-shadow-sm">Relatórios</h1>
+                    <p class="text-slate-900 font-medium mt-1 drop-shadow-sm">Visualize e imprima relatórios dos residentes ativos.</p>
                 </div>
                 <div>
                     <BaseButton variant="primary" @click="printReport">
@@ -38,20 +41,17 @@ const printReport = () => {
             </header>
 
             <div class="mb-8 print:hidden">
-                <nav class="flex space-x-4 border-b border-slate-200" aria-label="Tabs">
-                    <button @click="activeTab = 'gender'"
-                        :class="[activeTab === 'gender' ? 'border-emerald-500 text-emerald-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300', 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors']">
+                <NavTabs>
+                    <NavTab @click="activeTab = 'gender'" :active="activeTab === 'gender'">
                         Por Gênero
-                    </button>
-                    <button @click="activeTab = 'dependency'"
-                        :class="[activeTab === 'dependency' ? 'border-emerald-500 text-emerald-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300', 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors']">
+                    </NavTab>
+                    <NavTab @click="activeTab = 'dependency'" :active="activeTab === 'dependency'">
                         Por Grau de Dependência
-                    </button>
-                    <button @click="activeTab = 'disease'"
-                        :class="[activeTab === 'disease' ? 'border-emerald-500 text-emerald-600' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300', 'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors']">
+                    </NavTab>
+                    <NavTab @click="activeTab = 'disease'" :active="activeTab === 'disease'">
                         Por Comorbidade
-                    </button>
-                </nav>
+                    </NavTab>
+                </NavTabs>
             </div>
 
 
@@ -61,7 +61,7 @@ const printReport = () => {
 
             <div v-show="activeTab === 'gender'" class="space-y-12">
                 <div v-for="(residents, gender) in props.byGender" :key="gender"
-                    class="bg-white rounded-2xl shadow-sm border border-slate-200 print:shadow-none print:border-none p-6 print:p-0">
+                    class="card-glass rounded-2xl print:shadow-none print:border-none p-6 print:p-0">
                     <div class="overflow-x-auto print:overflow-visible">
                         <table class="w-full text-left border-collapse">
                             <thead>
@@ -111,7 +111,7 @@ const printReport = () => {
 
             <div v-show="activeTab === 'dependency'" class="space-y-12">
                 <div v-for="(residents, dependency) in props.byDependency" :key="dependency"
-                    class="bg-white rounded-2xl shadow-sm border border-slate-200 print:shadow-none print:border-none p-6 print:p-0">
+                    class="card-glass rounded-2xl print:shadow-none print:border-none p-6 print:p-0">
                     <div class="overflow-x-auto print:overflow-visible">
                         <table class="w-full text-left border-collapse">
                             <thead>
@@ -159,7 +159,7 @@ const printReport = () => {
 
             <div v-show="activeTab === 'disease'" class="space-y-12">
                 <div v-for="(residents, disease) in props.byDisease" :key="disease"
-                    class="bg-white rounded-2xl shadow-sm border border-slate-200 print:shadow-none print:border-none p-6 print:p-0">
+                    class="card-glass rounded-2xl print:shadow-none print:border-none p-6 print:p-0">
                     <div class="overflow-x-auto print:overflow-visible" v-if="residents.length > 0">
                         <table class="w-full text-left border-collapse">
                             <thead>
@@ -206,5 +206,4 @@ const printReport = () => {
             </div>
 
         </main>
-    </AppLayout>
-</template>
+    </template>

@@ -16,4 +16,19 @@
         Instrument Sans, ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
+
+    --color-green-1: #CFE0DA;
+    --color-green-2: #598979;
+    --color-green-3: #8EB4A7;
+    --color-green-4: #6ea190;
+}
+
+@layer components {
+    .card-glass {
+        @apply bg-emerald-50/80 backdrop-blur-sm border border-emerald-100/50 shadow-sm;
+    }
+
+    .card-glass-inner {
+        @apply bg-emerald-50/60 border border-emerald-100;
+    }
 }
