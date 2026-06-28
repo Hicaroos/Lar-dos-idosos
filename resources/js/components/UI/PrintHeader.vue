@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-    <div class="hidden print:flex justify-between items-center mb-8 border-b border-slate-200 pb-4">
+    <div class="hidden print:flex justify-between items-center mb-4 border-b border-slate-200 pb-2">
         <div class="text-4xl text-emerald-600 font-signature [-webkit-text-stroke:0.45px_currentColor]">
             Lar do idoso
         </div>

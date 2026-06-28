@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+
+defineOptions({ layout: AppLayout });
 import { Link, router } from '@inertiajs/vue3';
 import { ArrowLeftIcon, ArrowPathIcon, TrashIcon, PencilIcon, PrinterIcon } from '@heroicons/vue/24/outline';
 import residentsRoutes from '@/routes/residents';
@@ -138,28 +140,26 @@ const window = globalThis.window;
 </script>
 
 <template>
-    <AppLayout>
-        <div class="w-full h-full">
-            <main class="w-full bg-slate-100 p-12 flex flex-col gap-8 shadow-sm print:bg-white print:p-0 print:shadow-none print:block">
+            <div class="w-full h-full">
+            <main class="w-full p-12 flex flex-col gap-6 print:bg-white print:p-0 print:shadow-none print:block">
 
-                <!-- Header só visível na impressão -->
                 <PrintHeader title="Prontuário de Residente" />
                 
-                <header class="flex items-center gap-8 print:gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 print:shadow-none print:border-none print:p-0 print:mb-2">
+                <header class="flex items-center gap-8 print:gap-4 card-glass p-6 rounded-2xl print:shadow-none print:border-none print:p-0 print:mb-1">
                     <img :src="resident.photo_path ? `/uploads/${resident.photo_path}` : `https://ui-avatars.com/api/?name=${resident.name}&background=random&color=fff&size=128`"
                         alt="Foto do residente"
                         class="w-32 h-32 rounded-full object-cover border-4 border-slate-100 shadow-sm print:w-16 print:h-16 print:border-2">
 
                     <div class="w-full flex justify-between items-center">
                         <div>
-                            <h2 class="font-bold text-slate-500 uppercase tracking-widest text-xs mb-1">N° do
+                            <h2 class="font-bold text-emerald-950 uppercase tracking-widest text-xs mb-1">N° do
                                 prontuário: {{ resident.registration_number || 'N/A' }}</h2>
-                            <h1 class="text-3xl print:text-2xl font-bold text-slate-800 flex items-center gap-3">
+                            <h1 class="text-3xl print:text-2xl font-bold text-emerald-950 flex items-center gap-3 drop-shadow-sm">
                                 {{ resident.name }}
                                 <Tag v-if="resident.deleted_at" cor="slate" text="No Histórico" class="text-sm" />
                             </h1>
-                            <p class="text-slate-500 mt-2 flex items-center gap-2">
-                                <span class="bg-slate-200 text-slate-700 px-3 py-1 rounded-full text-sm font-medium">
+                            <p class="text-emerald-950 mt-2 flex items-center gap-2 font-medium">
+                                <span class="bg-green-50 text-slate-700 px-3 py-1 rounded-full text-sm font-medium">
                                     Admitido em: {{ formatDate(resident.admission_date) }}
                                 </span>
                             </p>
@@ -172,7 +172,7 @@ const window = globalThis.window;
                                 Voltar
                             </BaseButton>
                             <template v-if="resident.deleted_at">
-                                <BaseButton variant="primary" @click="restoreResident">
+                                <BaseButton variant="tertiary" @click="restoreResident">
                                     <ArrowPathIcon class="w-5 h-5" />
                                     Restaurar
                                 </BaseButton>
@@ -182,7 +182,7 @@ const window = globalThis.window;
                                 </BaseButton>
                             </template>
                             <template v-else>
-                                <BaseButton variant="primary" :href="residentsRoutes.edit(resident.id).url">
+                                <BaseButton variant="tertiary" :href="residentsRoutes.edit(resident.id).url">
                                     <PencilIcon class="w-5 h-5" />
                                     Editar
                                 </BaseButton>
@@ -190,7 +190,7 @@ const window = globalThis.window;
                                     <TrashIcon class="w-5 h-5" />
                                     Excluir
                                 </BaseButton>
-                                <BaseButton variant="secondary" @click="() => window.print()">
+                                <BaseButton variant="outline" @click="() => window.print()">
                                     <PrinterIcon class="w-5 h-5" />
                                     Imprimir Dados
                                 </BaseButton>
@@ -200,10 +200,10 @@ const window = globalThis.window;
                 </header>
 
 
-                <div class="grid grid-cols-2 gap-6 w-full print:grid print:grid-cols-2 print:gap-2">
+                <div class="grid grid-cols-2 gap-4 w-full print:grid print:grid-cols-2 print:gap-6">
 
                     <DataTable>
-                        <h2 class="font-bold text-lg mb-6 print:mb-2 text-slate-800 flex items-center gap-2 border-b pb-2 print:pb-1">
+                        <h2 class="font-bold text-lg mb-6 print:mb-1 text-emerald-950 flex items-center gap-2 border-b pb-2 print:pb-1">
                             Dados Pessoais
                         </h2>
                         <div class="space-y-3 print:space-y-1 text-sm">
@@ -219,7 +219,7 @@ const window = globalThis.window;
 
 
                     <DataTable class="flex flex-col">
-                        <h2 class="font-bold text-lg mb-6 print:mb-2 text-slate-800 flex items-center gap-2 border-b pb-2 print:pb-1">
+                        <h2 class="font-bold text-lg mb-6 print:mb-2 text-emerald-950 flex items-center gap-2 border-b pb-2 print:pb-1">
                             Saúde e Dependência
                         </h2>
                         <div class="space-y-3 print:space-y-1 text-sm flex-1 flex flex-col">
@@ -229,33 +229,36 @@ const window = globalThis.window;
 
                             <InfoRow label="Tipo Sanguíneo:">
                                 <template v-if="resident.blood_type">
-                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-red-500 text-red-600 font-bold bg-red-50 print:hidden">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-full border-2 border-red-500 text-red-600 font-bold print:hidden">
                                         {{ resident.blood_type }}
                                     </span>
-                                    <span class="hidden print:inline text-slate-800">
+                                    <span class="hidden print:inline text-emerald-950">
                                         {{ resident.blood_type }}
                                     </span>
                                 </template>
                                 <span v-else>-</span>
                             </InfoRow>
 
-                            <div class="print:mt-1 flex flex-wrap gap-2 font-bold text-sm text-slate-800">
-                                <Tag v-if="resident.is_diabetic" cor="emerald" text="Diabético"></Tag>
-                                <Tag v-if="resident.is_hypertensive" cor="sky" text="Hipertenso"></Tag>
-                                <Tag v-if="resident.is_epileptic" cor="purple" text="Epilético"></Tag>
-
-                                <span
-                                    v-if="!resident.is_diabetic && !resident.is_hypertensive && !resident.is_epileptic"
-                                    class="text-slate-400 italic font-normal">Sem comorbidades registradas</span>
+                            <div class="pt-2 print:mt-1 print:pt-1">
+                                <span class="text-slate-500 block mb-2">Comorbidades:</span>
+                                <div class="flex flex-wrap gap-2 font-bold text-sm">
+                                    <Tag v-if="resident.is_diabetic" cor="purple" text="Diabético"></Tag>
+                                    <Tag v-if="resident.is_hypertensive" cor="violet" text="Hipertenso"></Tag>
+                                    <Tag v-if="resident.is_epileptic" cor="indigo" text="Epilético"></Tag>
+    
+                                    <span
+                                        v-if="!resident.is_diabetic && !resident.is_hypertensive && !resident.is_epileptic"
+                                        class="text-slate-400 italic font-normal">Nenhuma doença / comorbidade registrada</span>
+                                </div>
                             </div>
 
-                            <div class="pt-4 print:mt-1 print:pt-1" v-if="resident.amenities">
-                                <span class="text-slate-500 block mb-1">Observações / Comodidades:</span>
-                                <p class="text-slate-800">{{ resident.amenities }}</p>
+                            <div class="pt-4 print:mt-1 print:pt-0" v-if="resident.amenities">
+                                <span class="text-slate-500 block mb-1 print:mb-0">Observações / Comodidades:</span>
+                                <p class="text-emerald-950">{{ resident.amenities }}</p>
                             </div>
                             
                             <div class="mt-auto pt-4 print:hidden">
-                                <BaseButton variant="primary" :href="`/residents/${resident.id}/medications`" class="w-full">
+                                <BaseButton variant="tertiary" :href="`/residents/${resident.id}/medications`" class="w-full">
                                     Ver medicamentos
                                 </BaseButton>
                             </div>
@@ -264,7 +267,7 @@ const window = globalThis.window;
 
 
                     <DataTable class="print:col-span-2">
-                        <h2 class="font-bold text-lg mb-6 print:mb-2 text-slate-800 flex items-center gap-2 border-b pb-2 print:pb-1">
+                        <h2 class="font-bold text-lg mb-6 print:mb-2 text-emerald-950 flex items-center gap-2 border-b pb-2 print:pb-1">
                             Documentação
                         </h2>
                         <div class="space-y-3 print:space-y-1 text-sm">
@@ -284,13 +287,13 @@ const window = globalThis.window;
                                 <span class="text-slate-500 block mb-2">Certidão de Nascimento:</span>
                                 <div class="grid grid-cols-3 gap-2 bg-slate-50 p-2 rounded">
                                     <div><span class="text-xs text-slate-400 block">Número</span> <span
-                                            class="font-medium text-slate-800">{{ resident.birth_certificate || '-'
+                                            class="font-medium text-emerald-950">{{ resident.birth_certificate || '-'
                                             }}</span></div>
                                     <div><span class="text-xs text-slate-400 block">Livro</span> <span
-                                            class="font-medium text-slate-800">{{ resident.birth_certificate_lv || '-'
+                                            class="font-medium text-emerald-950">{{ resident.birth_certificate_lv || '-'
                                             }}</span></div>
                                     <div><span class="text-xs text-slate-400 block">Folha</span> <span
-                                            class="font-medium text-slate-800">{{ resident.birth_certificate_leaves ||
+                                            class="font-medium text-emerald-950">{{ resident.birth_certificate_leaves ||
                                                 '-' }}</span></div>
                                 </div>
                             </div>
@@ -299,7 +302,7 @@ const window = globalThis.window;
 
 
                     <DataTable class="print:col-span-2">
-                        <h2 class="font-bold text-lg mb-6 print:mb-2 text-slate-800 flex items-center gap-2 border-b pb-2 print:pb-1">
+                        <h2 class="font-bold text-lg mb-6 print:mb-2 text-emerald-950 flex items-center gap-2 border-b pb-2 print:pb-1">
                             Endereço de Origem
                         </h2>
                         <div class="space-y-3 print:space-y-1 text-sm">
@@ -313,7 +316,7 @@ const window = globalThis.window;
                             </InfoRow>
                             <div class="mt-2 pt-2 print:mt-1 print:pt-1 border-t border-slate-50 flex flex-col">
                                 <span class="text-slate-500">Ponto de Referência:</span>
-                                <span class="font-medium text-slate-800 mt-1">
+                                <span class="font-medium text-emerald-950 mt-1">
                                     {{ resident.reference_point || 'Não informado' }}
                                 </span>
                             </div>
@@ -324,10 +327,10 @@ const window = globalThis.window;
                     <div class="col-span-2 print:hidden">
                         <DataTable>
                             <div class="flex justify-between items-center mb-6 border-b pb-2">
-                                <h2 class="font-bold text-lg text-slate-800 flex items-center gap-2">
+                                <h2 class="font-bold text-lg text-emerald-950 flex items-center gap-2">
                                     Documentos Anexados
                                 </h2>
-                                <BaseButton v-if="!resident.deleted_at" variant="primary" @click="showDocumentModal = true" class="text-sm py-1.5 px-3">
+                                <BaseButton v-if="!resident.deleted_at" variant="tertiary" @click="showDocumentModal = true" class="text-sm py-1.5 px-3">
                                     Anexar Documento
                                 </BaseButton>
                             </div>
@@ -345,7 +348,7 @@ const window = globalThis.window;
                                         <BaseButton @click="openDoc(doc.file_path)" variant="secondary" class="!px-3 !py-2 !text-xs uppercase tracking-wider font-bold">
                                             Acessar
                                         </BaseButton>
-                                        <BaseButton @click="downloadDoc(doc)" variant="primary" class="!px-3 !py-2 !text-xs uppercase tracking-wider font-bold">
+                                        <BaseButton @click="downloadDoc(doc)" variant="tertiary" class="!px-3 !py-2 !text-xs uppercase tracking-wider font-bold">
                                             Baixar
                                         </BaseButton>
                                         <BaseButton v-if="!resident.deleted_at" @click="openDeleteDocModal(doc.id)" variant="danger" class="!px-3 !py-2 !text-xs uppercase tracking-wider font-bold">
@@ -377,5 +380,4 @@ const window = globalThis.window;
             @confirm="confirmDeleteDoc" />
             
         <DocumentModal :show="showDocumentModal" :resident-id="resident.id" @close="showDocumentModal = false" />
-    </AppLayout>
-</template>
+    </template>

@@ -7,8 +7,11 @@ import CheckboxInput from '@/components/Form/CheckboxInput.vue';
 
 import { useForm, Link, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
+
+defineOptions({ layout: AppLayout });
 import residentsRoutes from '@/routes/residents';
 import BaseButton from '@/components/UI/BaseButton.vue';
+import { XMarkIcon, CheckIcon, ArrowPathIcon } from '@heroicons/vue/24/solid';
 
 const props = defineProps<{
     resident: any;
@@ -85,22 +88,28 @@ const deletePhoto = () => {
 </script>
 
 <template>
-    <AppLayout>
-
-        <form @submit.prevent="submit" class="w-full bg-slate-100 p-12 flex flex-col gap-8 shadow-sm">
+    
+        <form @submit.prevent="submit" class="w-full p-12 flex flex-col gap-8">
 
             <div class="flex items-center justify-between mb-8">
                 <div>
-                    <h1 class="text-3xl font-bold text-slate-800">Editar Residente</h1>
-                    <p class="text-slate-500 mt-1">Atualize as informações do idoso matriculado.</p>
+                    <h1 class="text-3xl font-bold text-emerald-950 drop-shadow-sm">Editar Residente</h1>
+                    <p class="text-slate-900 font-medium mt-1 drop-shadow-sm">Atualize as informações do idoso matriculado.</p>
                 </div>
                 <div class="flex gap-4">
-                    <BaseButton variant="outline" type="button" @click="goBack">
+                    <BaseButton variant="primary" type="button" @click="goBack">
+                        <XMarkIcon class="w-5 h-5" />
                         Cancelar
                     </BaseButton>
-                    <BaseButton variant="primary" type="submit" :disabled="form.processing">
-                        <span v-if="form.processing">Salvando...</span>
-                        <span v-else>Salvar Alterações</span>
+                    <BaseButton variant="secondary" type="submit" :disabled="form.processing">
+                        <template v-if="form.processing">
+                            <ArrowPathIcon class="w-5 h-5 animate-spin" />
+                            <span>Salvando...</span>
+                        </template>
+                        <template v-else>
+                            <CheckIcon class="w-5 h-5" />
+                            <span>Salvar Alterações</span>
+                        </template>
                     </BaseButton>
                 </div>
             </div>
@@ -108,8 +117,8 @@ const deletePhoto = () => {
             <div class="grid grid-cols-2 gap-6">
 
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 col-span-2">
-                    <h2 class="font-bold text-lg mb-4 text-slate-800 border-b pb-2">Identificação e Admissão</h2>
+                <div class="card-glass p-6 rounded-2xl col-span-2">
+                    <h2 class="font-bold text-lg mb-4 text-emerald-950 border-b border-emerald-200/50 pb-2">Identificação e Admissão</h2>
                     <div class="grid grid-cols-3 gap-6">
                         <div>
                             <InputLabel value="N° do prontuário *" />
@@ -146,8 +155,8 @@ const deletePhoto = () => {
                 </div>
 
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="font-bold text-lg mb-4 text-slate-800 border-b pb-2">Dados Pessoais</h2>
+                <div class="card-glass p-6 rounded-2xl">
+                    <h2 class="font-bold text-lg mb-4 text-emerald-950 border-b border-emerald-200/50 pb-2">Dados Pessoais</h2>
                     <div class="space-y-4">
                         <div>
                             <InputLabel value="Nome Completo *" />
@@ -216,8 +225,8 @@ const deletePhoto = () => {
                 </div>
 
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="font-bold text-lg mb-4 text-slate-800 border-b pb-2">Saúde e Dependência</h2>
+                <div class="card-glass p-6 rounded-2xl">
+                    <h2 class="font-bold text-lg mb-4 text-emerald-950 border-b border-emerald-200/50 pb-2">Saúde e Dependência</h2>
                     <div class="space-y-4">
                         <div>
                             <InputLabel value="Grau de Dependência *" />
@@ -262,8 +271,8 @@ const deletePhoto = () => {
                 </div>
 
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="font-bold text-lg mb-4 text-slate-800 border-b pb-2">Documentação</h2>
+                <div class="card-glass p-6 rounded-2xl">
+                    <h2 class="font-bold text-lg mb-4 text-emerald-950 border-b border-emerald-200/50 pb-2">Documentação</h2>
                     <div class="space-y-4">
                         <div class="grid grid-cols-2 gap-4">
                             <div>
@@ -330,8 +339,8 @@ const deletePhoto = () => {
                 </div>
 
 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                    <h2 class="font-bold text-lg mb-4 text-slate-800 border-b pb-2">Endereço de Origem</h2>
+                <div class="card-glass p-6 rounded-2xl">
+                    <h2 class="font-bold text-lg mb-4 text-emerald-950 border-b border-emerald-200/50 pb-2">Endereço de Origem</h2>
                     <div class="space-y-4">
                         <div class="grid grid-cols-3 gap-4">
                             <div>
@@ -377,5 +386,4 @@ const deletePhoto = () => {
 
             </div>
         </form>
-    </AppLayout>
-</template>
+    </template>
