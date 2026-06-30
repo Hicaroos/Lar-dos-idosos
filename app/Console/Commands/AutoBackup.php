@@ -51,15 +51,31 @@ class AutoBackup extends Command
         $zip = new ZipArchive;
         if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
             
-            $dbPath = config('database.connections.sqlite.database');
-            if ($dbPath && File::exists($dbPath)) {
+
+            $possibleDbPaths = [
+                config('database.connections.sqlite.database'),
+                dirname(storage_path()) . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR . 'database.sqlite',
+                database_path('database.sqlite')
+            ];
+
+            $dbPath = null;
+            foreach ($possibleDbPaths as $path) {
+                if ($path && File::exists($path) && !is_dir($path)) {
+                    $dbPath = $path;
+                    break;
+                }
+            }
+
+            $zip->addFromString('info.txt', "Backup gerado em: " . date('Y-m-d H:i:s'));
+
+            if ($dbPath) {
                 $zip->addFile($dbPath, 'database.sqlite');
-            }
-            if ($dbPath && File::exists($dbPath . '-wal')) {
-                $zip->addFile($dbPath . '-wal', 'database.sqlite-wal');
-            }
-            if ($dbPath && File::exists($dbPath . '-shm')) {
-                $zip->addFile($dbPath . '-shm', 'database.sqlite-shm');
+                if (File::exists($dbPath . '-wal')) {
+                    $zip->addFile($dbPath . '-wal', 'database.sqlite-wal');
+                }
+                if (File::exists($dbPath . '-shm')) {
+                    $zip->addFile($dbPath . '-shm', 'database.sqlite-shm');
+                }
             }
 
             $storagePath = storage_path('app/public');
