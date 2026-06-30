@@ -15,14 +15,14 @@ class BackupController extends Controller
 
         if ($zip->open($zipFilePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
 
-            $dbPath = database_path('database.sqlite');
-            if (File::exists($dbPath)) {
+            $dbPath = config('database.connections.sqlite.database');
+            if ($dbPath && File::exists($dbPath)) {
                 $zip->addFile($dbPath, 'database.sqlite');
             }
-            if (File::exists($dbPath . '-wal')) {
+            if ($dbPath && File::exists($dbPath . '-wal')) {
                 $zip->addFile($dbPath . '-wal', 'database.sqlite-wal');
             }
-            if (File::exists($dbPath . '-shm')) {
+            if ($dbPath && File::exists($dbPath . '-shm')) {
                 $zip->addFile($dbPath . '-shm', 'database.sqlite-shm');
             }
 
