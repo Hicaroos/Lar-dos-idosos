@@ -8,7 +8,7 @@ import BaseButton from '@/components/UI/BaseButton.vue';
 const props = defineProps<{
     show: boolean;
     residentId: number;
-    medication?: any; // Se null, é criação. Se existir, é edição
+    medication?: any; 
 }>();
 
 const emit = defineEmits<{
@@ -24,7 +24,6 @@ const form = useForm({
     shift: 'Manhã',
 });
 
-// Atualiza o formulário sempre que o modal abre ou a prop medication muda
 watch(() => props.show, (newShow) => {
     if (newShow) {
         if (props.medication) {
@@ -116,10 +115,10 @@ const close = () => {
                 </div>
 
                 <div class="flex gap-4 pt-4">
-                    <BaseButton variant="outline" type="button" @click="close" class="flex-1">
+                    <BaseButton variant="secondary" type="button" @click="close" class="flex-1">
                         Cancelar
                     </BaseButton>
-                    <BaseButton variant="primary" type="submit" :disabled="form.processing" class="flex-1">
+                    <BaseButton variant="tertiary" type="submit" :disabled="form.processing" class="flex-1">
                         {{ isEditing ? 'Salvar Alterações' : 'Adicionar Receita' }}
                     </BaseButton>
                 </div>

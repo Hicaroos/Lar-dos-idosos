@@ -54,15 +54,15 @@ const submit = () => {
                 
                 <div>
                     <InputLabel for="file_path" value="Arquivo" />
-                    <input id="file_path" type="file" @change="handleFileChange" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" required />
+                    <input id="file_path" type="file" @change="handleFileChange" class="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-1 file:text-green-2 hover:file:bg-green-3 hover:file:text-white transition-colors" required />
                     <InputError class="mt-2" :message="form.errors.file_path" />
                 </div>
 
                 <div class="flex gap-4 justify-end mt-8">
-                    <BaseButton variant="outline" type="button" @click="$emit('close')">
+                    <BaseButton variant="secondary" type="button" @click="$emit('close')">
                         Cancelar
                     </BaseButton>
-                    <BaseButton variant="primary" type="submit" :disabled="form.processing">
+                    <BaseButton variant="tertiary" type="submit" :disabled="form.processing">
                         Salvar
                     </BaseButton>
                 </div>

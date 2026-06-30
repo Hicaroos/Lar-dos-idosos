@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import AppLayout from '@/Layouts/AppLayout.vue';
+
+defineOptions({ layout: AppLayout });
 import { ref, computed } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
-import { SunIcon, MoonIcon, PlusIcon, ArrowLeftIcon, PrinterIcon } from '@heroicons/vue/24/outline';
+import { SunIcon, MoonIcon, PlusIcon, ArrowLeftIcon, PrinterIcon, SparklesIcon, ClockIcon } from '@heroicons/vue/24/outline';
 import MedicationTable from '@/components/DataDisplay/MedicationTable.vue';
 import MedicationModal from '@/components/Modals/MedicationModal.vue';
 import DeleteModal from '@/components/Modals/DeleteModal.vue';
@@ -70,8 +72,7 @@ const windowObj = globalThis.window;
 </script>
 
 <template>
-    <AppLayout>
-        <div class="max-w-7xl mx-auto p-12 print:p-0 print:max-w-none">
+            <div class="max-w-7xl mx-auto p-8 print:p-0 print:max-w-none">
             <PrintHeader :title="'Medicamentos - ' + resident.name" />
             <header class="flex justify-between items-center mb-8 print:mb-4">
                 <div>
@@ -87,7 +88,7 @@ const windowObj = globalThis.window;
                         <ArrowLeftIcon class="w-5 h-5 mr-2" />
                         Voltar para o Perfil
                     </BaseButton>
-                    <BaseButton v-if="!resident.deleted_at" variant="primary" @click="openCreateModal">
+                    <BaseButton v-if="!resident.deleted_at" variant="tertiary" @click="openCreateModal">
                         <PlusIcon class="w-5 h-5 mr-2" />
                         Adicionar Receita
                     </BaseButton>
@@ -102,7 +103,7 @@ const windowObj = globalThis.window;
                 <MedicationTable title="Manhã" theme="emerald" :readonly="!!resident.deleted_at" :medications="morningMedications" @edit="openEditModal"
                     @delete="confirmDelete">
                     <template #icon>
-                        <SunIcon class="w-6 h-6" />
+                        <SparklesIcon class="w-6 h-6" />
                     </template>
                 </MedicationTable>
 
@@ -128,5 +129,4 @@ const windowObj = globalThis.window;
         <DeleteModal :show="isDeleteModalOpen" title="Excluir Receita?"
             message="Tem certeza que deseja remover este medicamento do prontuário? Esta ação não pode ser desfeita."
             @close="isDeleteModalOpen = false" @confirm="executeDelete" />
-    </AppLayout>
-</template>
+    </template>
