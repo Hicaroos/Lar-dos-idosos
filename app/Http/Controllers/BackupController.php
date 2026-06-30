@@ -19,6 +19,12 @@ class BackupController extends Controller
             if (File::exists($dbPath)) {
                 $zip->addFile($dbPath, 'database.sqlite');
             }
+            if (File::exists($dbPath . '-wal')) {
+                $zip->addFile($dbPath . '-wal', 'database.sqlite-wal');
+            }
+            if (File::exists($dbPath . '-shm')) {
+                $zip->addFile($dbPath . '-shm', 'database.sqlite-shm');
+            }
 
 
             $storagePath = storage_path('app/public');
