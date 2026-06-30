@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
-import { UserGroupIcon, ClockIcon, DocumentTextIcon, ArrowRightOnRectangleIcon, KeyIcon, Cog6ToothIcon } from '@heroicons/vue/24/outline';
+import { UserGroupIcon, ClockIcon, DocumentTextIcon, ArrowRightOnRectangleIcon, KeyIcon, Cog6ToothIcon, ArchiveBoxArrowDownIcon } from '@heroicons/vue/24/outline';
 import { computed, ref } from 'vue';
 import NavTabs from '@/components/UI/NavTabs.vue';
 import NavTab from '@/components/UI/NavTab.vue';
@@ -55,6 +55,10 @@ const isDropdownOpen = ref(false);
                         <KeyIcon class="w-4 h-4" />
                         Trocar Senha
                     </button>
+                    <a href="/backup" @click="isDropdownOpen = false" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-white/50 hover:text-green-2 flex items-center gap-2 transition-colors">
+                        <ArchiveBoxArrowDownIcon class="w-4 h-4" />
+                        Criar Backup Agora
+                    </a>
                     <Link href="/logout" method="post" as="button" type="button" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50/50 flex items-center gap-2 transition-colors">
                         <ArrowRightOnRectangleIcon class="w-4 h-4" />
                         Sair

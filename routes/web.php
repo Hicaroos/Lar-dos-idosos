@@ -5,6 +5,7 @@ use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\MedicationsController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\ResidentsController;
+use App\Http\Controllers\BackupController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -26,6 +27,7 @@ Route::middleware('auth.password')->group(function () {
     Route::resource('documents', DocumentsController::class);
 
     Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
+    Route::get('backup', BackupController::class)->name('backup');
 
     Route::get('uploads/{path}', function ($path) {
         $absolutePath = storage_path('app/public/'.$path);
