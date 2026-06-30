@@ -27,6 +27,11 @@ class AuthController extends Controller
         if ($isFirstTime) {
             $request->validate([
                 'password' => 'required|string|min:4|confirmed',
+            ], [
+                'password.required' => 'A senha é obrigatória.',
+                'password.string' => 'A senha deve ser um texto.',
+                'password.min' => 'A senha deve ter no mínimo 4 caracteres.',
+                'password.confirmed' => 'As senhas não coincidem.',
             ]);
 
             if (! $user) {
@@ -47,6 +52,9 @@ class AuthController extends Controller
 
         $request->validate([
             'password' => 'required|string',
+        ], [
+            'password.required' => 'A senha é obrigatória.',
+            'password.string' => 'A senha deve ser um texto.',
         ]);
 
         if (Hash::check($request->password, $user->password)) {
@@ -70,6 +78,13 @@ class AuthController extends Controller
         $request->validate([
             'current_password' => 'required|string',
             'password' => 'required|string|min:4|confirmed',
+        ], [
+            'current_password.required' => 'A senha atual é obrigatória.',
+            'current_password.string' => 'A senha atual deve ser um texto.',
+            'password.required' => 'A nova senha é obrigatória.',
+            'password.string' => 'A nova senha deve ser um texto.',
+            'password.min' => 'A nova senha deve ter no mínimo 4 caracteres.',
+            'password.confirmed' => 'A confirmação da nova senha não coincide.',
         ]);
 
         $user = User::first();
