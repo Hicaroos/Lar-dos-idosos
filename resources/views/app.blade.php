@@ -8,14 +8,26 @@
         <link rel="icon" href="/favicon.svg" type="image/svg+xml">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
-        @fonts
+        <?php
+            $manifestPath = public_path('build/manifest.json');
+            $css = '';
+            $js = '';
+            $componentJs = '';
+            if (file_exists($manifestPath)) {
+                $manifest = json_decode(file_get_contents($manifestPath), true);
+                $css = $manifest['resources/css/app.css']['file'] ?? '';
+                $js = $manifest['resources/js/app.ts']['file'] ?? '';
+                $componentFile = "resources/js/pages/{$page['component']}.vue";
+                $componentJs = $manifest[$componentFile]['file'] ?? '';
+            }
+        ?>
+        @if($css) <link rel="stylesheet" href="/build/{{ $css }}"> @endif
+        @if($js) <script type="module" src="/build/{{ $js }}"></script> @endif
+        @if($componentJs) <script type="module" src="/build/{{ $componentJs }}"></script> @endif
 
-        @vite(['resources/css/app.css', 'resources/js/app.ts', "resources/js/pages/{$page['component']}.vue"])
-        <x-inertia::head>
-            <title>{{ config('app.name', 'Laravel') }}</title>
-        </x-inertia::head>
+        @inertiaHead
     </head>
     <body class="font-sans antialiased bg-slate-100 text-slate-800">
-        <x-inertia::app />
+        @inertia
     </body>
 </html>
